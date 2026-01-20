@@ -43,4 +43,4 @@
                 <a href="#" class="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium">Kategori</a>
             </div>
         </div>
-    </nav>s
+    </nav>
