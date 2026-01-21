@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CMS\UserController;
 use Illuminate\Support\Facades\Route;
 
 // route auth
@@ -37,3 +38,15 @@ Route::get('/inv', function () {
 Route::get('/dashboard', function () {
     return view('admin.dashboard');
 });
+
+// route api
+Route::prefix('thrif-id')->group(function () {
+    Route::prefix('user')->controller(UserController::class)->group(function () {
+        Route::get('/', 'getAllData');
+        Route::post('/create', 'createData');
+        Route::get('/get/{id}', 'getDataById');
+        Route::post('/update/{id}', 'updateData');
+        Route::delete('/delete/{id}', 'deleteData');
+    });
+});
+Route::middleware(['auth', 'web'])->group(function () {});

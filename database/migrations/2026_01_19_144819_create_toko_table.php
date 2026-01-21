@@ -15,6 +15,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->string('nama_toko');
+            $table->string('email_toko');
+            $table->string('no_hp_toko');
+            $table->text('alamat_toko');
             $table->string('foto');
             $table->timestamps();
         });

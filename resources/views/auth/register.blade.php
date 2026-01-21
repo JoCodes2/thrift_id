@@ -16,6 +16,9 @@
             font-family: 'Inter', sans-serif;
         }
     </style>
+    <script>
+        let appUrl = '{{ env('APP_URL') }}';
+    </script>
 </head>
 <body class="bg-gradient-to-br from-green-50 to-stone-100 min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-2xl">
@@ -201,122 +204,10 @@
             © 2024 ThriftVibe. All rights reserved.
         </p>
     </div>
-
-    <script>
-        function toggleSellerFields() {
-            const role = document.querySelector('input[name="role"]:checked').value;
-            const sellerFields = document.getElementById('sellerFields');
-            const namaToko = document.getElementById('nama_toko');
-
-            // Update radio button styles
-            document.querySelectorAll('input[name="role"]').forEach(radio => {
-                const label = radio.closest('label');
-                if (radio.checked) {
-                    label.classList.add('border-green-700', 'bg-green-50');
-                    label.classList.remove('border-gray-300');
-                } else {
-                    label.classList.remove('border-green-700', 'bg-green-50');
-                    label.classList.add('border-gray-300');
-                }
-            });
-
-            if (role === 'penjual') {
-                sellerFields.classList.remove('hidden');
-                namaToko.required = true;
-            } else {
-                sellerFields.classList.add('hidden');
-                namaToko.required = false;
-                namaToko.value = '';
-            }
-        }
-
-        function togglePassword(fieldId) {
-            const passwordInput = document.getElementById(fieldId);
-            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
-        }
-
-        function handleRegister(event) {
-            event.preventDefault();
-
-            const formData = {
-                nama: document.getElementById('nama').value,
-                email: document.getElementById('email').value,
-                no_hp: document.getElementById('no_hp').value,
-                alamat: document.getElementById('alamat').value,
-                password: document.getElementById('password').value,
-                password_confirmation: document.getElementById('password_confirmation').value,
-                role: document.querySelector('input[name="role"]:checked').value,
-            };
-
-            // Add nama_toko if role is penjual
-            if (formData.role === 'penjual') {
-                formData.nama_toko = document.getElementById('nama_toko').value;
-            }
-
-            // Validasi password
-            if (formData.password !== formData.password_confirmation) {
-                showError('Password dan konfirmasi password tidak cocok!');
-                return;
-            }
-
-            if (formData.password.length < 8) {
-                showError('Password minimal 8 karakter!');
-                return;
-            }
-
-            // Validasi no HP
-            if (!/^08[0-9]{8,11}$/.test(formData.no_hp)) {
-                showError('Format nomor HP tidak valid!');
-                return;
-            }
-
-            // TODO: Kirim ke backend Laravel
-            console.log('Register attempt:', formData);
-
-            // Simulasi registrasi
-            // Dalam implementasi nyata, ganti dengan AJAX request ke Laravel
-            /*
-            fetch('/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Registrasi berhasil! Silakan login.');
-                    window.location.href = '/login';
-                } else {
-                    showError(data.message);
-                }
-            })
-            .catch(error => {
-                showError('Terjadi kesalahan. Silakan coba lagi.');
-            });
-            */
-
-            alert(`Registrasi berhasil sebagai ${formData.role}! (Demo mode)`);
-        }
-
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            const errorText = document.getElementById('errorText');
-            errorText.textContent = message;
-            errorDiv.classList.remove('hidden');
-
-            setTimeout(() => {
-                errorDiv.classList.add('hidden');
-            }, 5000);
-        }
-
-        function showLogin() {
-            // In real implementation, navigate to login page
-            alert('Navigasi ke halaman login');
-            // window.location.href = '/login';
-        }
-    </script>
+         <!-- build:js assets/vendor/js/core.js -->
+    <script src="{{ asset('assets/assets/vendor/libs/jquery/jquery.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js"
+        integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>
