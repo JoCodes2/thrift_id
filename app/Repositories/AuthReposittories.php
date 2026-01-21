@@ -29,12 +29,13 @@ class AuthReposittories implements AuthInterfaces
                 $user = $this->userModel::where('email', $request->email)->first();
                 $user->createToken('token')->plainTextToken;
                 return response()->json([
+                    'data' => $user,
                     'status' => 'success',
                     'message' => 'Login success',
                 ]);
             }
         } catch (\Throwable $th) {
-            return $this->error($th->getMessage());
+            return $this->error($th->getMessage(), 400, $th, class_basename($this), __FUNCTION__);
         }
     }
     public function logout(Request $request)

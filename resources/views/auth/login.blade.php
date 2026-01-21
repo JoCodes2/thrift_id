@@ -38,17 +38,18 @@
         <div class="bg-white rounded-2xl shadow-xl p-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Masuk ke Akun</h2>
 
-            <form id="loginForm" onsubmit="handleLogin(event)">
+            <form id="loginForm" method="POST">
+                @csrf
                 <!-- Email -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent"
-                        placeholder="nama@email.com">
+                    <div class="relative"> <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent outline-none"
+                            placeholder="nama@email.com">
+                    </div>
                 </div>
 
                 <!-- Password -->
@@ -100,6 +101,6 @@
     <script src="{{ asset('helpers/alert-ui.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="module" src="{{ asset('js/controllers/user.controller.js') }}"></script>
+    <script type="module" src="{{ asset('js/controllers/auth.controller.js') }}"></script>
 </body>
 </html>

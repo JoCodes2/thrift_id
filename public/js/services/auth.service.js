@@ -1,4 +1,4 @@
-class userService {
+class authService {
     ajaxRequest(url, method, data = null) {
         return new Promise((resolve, reject) => {
             $.ajax({
@@ -13,50 +13,59 @@ class userService {
         });
     }
 
-    async registrasi(formElement) {
+    async login(formElement) {
         const submitButton = $(formElement).find('button[type="submit"]');
         const originalText = submitButton.html();
 
-        // 1. Tambahkan Konfirmasi Sebelum Submit
-        confirmAlert("Apakah Anda yakin data yang dimasukkan sudah benar?", async () => {
-            try {
-                const formData = new FormData(formElement);
+        try {
+            const formData = new FormData(formElement);
 
-                // Menampilkan loading setelah konfirmasi disetujui
-                loadingAllert('Pendaftaran', 'Sedang memproses akun Anda...');
-                submitButton.attr('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
+            loadingAllert('Autentikasi', 'Sedang memvalidasi kredensial...');
+            submitButton.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
 
-                const responseData = await this.ajaxRequest(`${appUrl}/thrif-id/user/create`, 'POST', formData);
-                console.log(responseData);
-
+            const responseData = await this.ajaxRequest(`${appUrl}/thrif-id/login`, 'POST', formData);
+            if (responseData.status === "success") {
                 Swal.close();
                 await successAlert();
 
-                window.location.href = '/login';
+                formElement.reset();
+                setTimeout(() => {
+                    const role = responseData.data.role;
+                    if (role == 'super-admin' || role == 'penjual') {
+                        window.location.href = '/dashboard';
+                    } else if (role == 'pembeli') {
+                        window.location.href = '/profile';
+                    } else {
+                        window.location.href = '/';
+                    }
+                }, 1000);
+            }
 
-            } catch (error) {
-                Swal.close();
-                submitButton.attr('disabled', false).html(originalText);
+        } catch (error) {
+            Swal.close();
+            submitButton.prop('disabled', false).html(originalText);
 
-                if (error.status === 422) {
-                    const errors = error.responseJSON?.data ?? error.responseJSON?.errors;
-                    const validator = $(formElement).validate();
+            if (error.status === 401) {
+                warningAlert("Email atau Password salah!");
+            } else if (error.status === 422) {
+                const errors = error.responseJSON?.errors;
+                const validator = $(formElement).validate();
 
-                    const errorList = {};
-                    $.each(errors, function (field, messages) {
-                        errorList[field] = messages[0];
-                    });
+                let errorList = {};
+                $.each(errors, function (field, messages) {
+                    errorList[field] = messages[0];
+                });
 
-                    validator.showErrors(errorList);
-                    warningAlert("Mohon periksa kembali data yang Anda masukkan.");
-                    return;
-                }
-
-                console.error("Detail Error:", error);
+                validator.showErrors(errorList);
+                warningAlert("Mohon periksa kembali inputan Anda.");
+            } else if (error.status === 404) {
+                warningAlert("Akun tidak ditemukan.");
+            } else {
                 errorAlert("Terjadi kesalahan sistem, silakan coba lagi nanti.");
             }
-        });
+            console.error("Login Error:", error);
+        }
     }
 }
 
-export default userService;
+export default authService;
