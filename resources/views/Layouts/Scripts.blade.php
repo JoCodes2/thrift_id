@@ -60,7 +60,7 @@
 
 
  <script>
-     const urlLogout = `${appUrl}/sitasi/logout`
+     const urlLogout = `${appUrl}/thrif-id/logout`
      $(document).ready(function() {
          $('#btnLogout').click(function(e) {
              Swal.fire({

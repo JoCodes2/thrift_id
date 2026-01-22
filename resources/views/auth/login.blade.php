@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - ThriftVibe</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap');
 
@@ -16,6 +17,14 @@
             font-family: 'Inter', sans-serif;
         }
     </style>
+    <script>
+        let appUrl = '{{ env('APP_URL') }}';
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
 </head>
 <body class="bg-gradient-to-br from-green-50 to-stone-100 min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md">
@@ -29,27 +38,18 @@
         <div class="bg-white rounded-2xl shadow-xl p-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Masuk ke Akun</h2>
 
-            <!-- Error Message (hidden by default) -->
-            <div id="errorMessage" class="hidden mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <p class="text-sm text-red-700" id="errorText"></p>
-                </div>
-            </div>
-
-            <form id="loginForm" onsubmit="handleLogin(event)">
+            <form id="loginForm" method="POST">
+                @csrf
                 <!-- Email -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent"
-                        placeholder="nama@email.com">
+                    <div class="relative"> <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-transparent outline-none"
+                            placeholder="nama@email.com">
+                    </div>
                 </div>
 
                 <!-- Password -->
@@ -72,17 +72,8 @@
                     </div>
                 </div>
 
-                <!-- Remember & Forgot -->
-                <div class="flex items-center justify-between mb-6">
-                    <label class="flex items-center">
-                        <input type="checkbox" class="w-4 h-4 text-green-700 border-gray-300 rounded focus:ring-green-700">
-                        <span class="ml-2 text-sm text-gray-600">Ingat saya</span>
-                    </label>
-                    <a href="#" class="text-sm text-green-700 hover:text-green-800 font-medium">Lupa password?</a>
-                </div>
-
                 <!-- Submit Button -->
-                <button type="submit" class="w-full bg-green-700 hover:bg-green-800 text-white px-6 py-3 rounded-lg font-medium transition-colors mb-4">
+                <button type="submit" id="btnLogin" class="w-full bg-green-700 hover:bg-green-800 text-white px-6 py-3 rounded-lg font-medium transition-colors mb-4">
                     Masuk
                 </button>
 
@@ -96,8 +87,20 @@
 
         <!-- Footer -->
         <p class="text-center text-sm text-gray-500 mt-8">
-            © 2024 ThriftVibe. All rights reserved.
+            © 2026 ThriftVibe by JoCodes. All rights reserved.
         </p>
     </div>
+    <script src="{{ asset('assets/assets/vendor/libs/jquery/jquery.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js"
+        integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="{{ asset('assets/assets/vendor/libs/jquery/jquery.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js"
+        integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{{ asset('helpers/alert-ui.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="{{ asset('js/controllers/auth.controller.js') }}"></script>
 </body>
 </html>

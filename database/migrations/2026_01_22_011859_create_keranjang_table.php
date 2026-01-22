@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('log_aktivitas', function (Blueprint $table) {
+        Schema::create('keranjang', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('id_pembeli')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('id_produk')->constrained('produk')->onDelete('cascade');
-            $table->enum('jenis_aktivitas', ['lihat', 'tambah_keranjang', 'transaksi']);
-            $table->integer('skor_minat');
-            $table->integer('frekuensi')->default(1);
-            $table->timestamps();
+            $table->integer('qty')->default(1);
 
-            $table->unique(['id_pembeli', 'id_produk', 'jenis_aktivitas']);
+            $table->timestamp('added_at')->useCurrent();
+            $table->timestamps();
         });
     }
 
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('log_aktivitas');
+        Schema::dropIfExists('keranjang');
     }
 };

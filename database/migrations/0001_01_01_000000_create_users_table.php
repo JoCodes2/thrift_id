@@ -15,11 +15,11 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('nama');
             $table->string('email')->unique();
+            $table->string('no_hp');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['super-admin', 'penjual', 'pembeli'])->default('pembeli');
             $table->text('alamat');
-            $table->string('no_hp');
             $table->rememberToken();
             $table->timestamps();
         });
