@@ -55,6 +55,15 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/riwayat-pesanan', function () {
         return view('pages.riwayat-pesanan');
     });
+    Route::get('/riwayat-pesanan/menunggu', function () {
+        return view('pages.riwayat-pesanan-menunggu');
+    });
+    Route::get('/riwayat-pesanan/dikirim', function () {
+        return view('pages.riwayat-pesanan-dikirim');
+    });
+    Route::get('/riwayat-pesanan/selesai', function () {
+        return view('pages.riwayat-pesanan-selesai');
+    });
 
     // route api
     Route::prefix('thrif-id')->group(function () {

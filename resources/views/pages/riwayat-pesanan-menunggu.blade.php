@@ -9,32 +9,28 @@
             @include('ui.nav-profile')
 
             <div class="lg:col-span-2 space-y-6">
-                @include('ui.nav-riwayat')
 
+                @include('ui.nav-riwayat')
                 <div class="grid grid-cols-1 gap-6">
 
-                    <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden transition-all hover:shadow-md">
+                    <div class="bg-white rounded-[2rem] border-2 border-orange-100 shadow-sm overflow-hidden transition-all hover:shadow-md">
                         <div class="p-6 md:p-8">
                             <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4 border-b border-gray-50 pb-6">
                                 <div class="flex items-center space-x-4">
-                                    <div class="w-10 h-10 bg-stone-50 rounded-xl flex items-center justify-center text-green-700 border border-stone-100">
-                                        <i class="fa-solid fa-receipt"></i>
+                                    <div class="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600 border border-orange-100">
+                                        <i class="fa-solid fa-clock-rotate-left"></i>
                                     </div>
                                     <div>
                                         <div class="flex items-center gap-2">
-                                            <h3 class="font-black text-gray-900 text-sm italic">TRX-2026-MULTI</h3>
+                                            <h3 class="font-black text-gray-900 text-sm italic">TRX-2026-WAITING</h3>
                                             <span class="text-[10px] text-gray-400 font-bold uppercase italic">{{ date('d M Y') }}</span>
                                         </div>
-                                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">ThriftVibe, +1 Toko lainnya</p>
+                                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5 italic">Menunggu Pembayaran / Konfirmasi</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <span class="px-3 py-1.5 bg-blue-50 text-blue-600 text-[9px] font-black rounded-lg uppercase tracking-wider border border-blue-100 flex items-center">
-                                        <span class="relative flex h-2 w-2 mr-2">
-                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                                            <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-                                        </span>
-                                        Pesanan Dikirim
+                                    <span class="px-3 py-1.5 bg-orange-50 text-orange-600 text-[9px] font-black rounded-lg uppercase tracking-wider border border-orange-100">
+                                        Belum Bayar
                                     </span>
                                 </div>
                             </div>
@@ -44,56 +40,35 @@
                                     <div class="w-16 h-16 bg-gray-100 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
                                         <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=200&q=80" class="w-full h-full object-cover">
                                     </div>
-                                    <div class="absolute -bottom-2 -right-2 bg-white px-2 py-1 rounded-lg shadow-sm border border-gray-50 text-[9px] font-black italic">+1</div>
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <h4 class="font-bold text-gray-800 text-sm truncate italic">Vintage Denim Jacket</h4>
-                                    <p class="text-[10px] text-gray-400 mt-1 italic leading-tight">Paket telah diserahkan ke kurir (SiCepat)</p>
+                                    <p class="text-[10px] text-gray-500 mt-1 italic leading-tight">Segera hubungi admin toko untuk detail pembayaran & ongkos kirim.</p>
                                 </div>
                                 <div class="text-right hidden sm:block border-l border-gray-50 pl-6">
-                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest italic">Total Bayar</p>
-                                    <p class="font-black text-green-700 text-lg tracking-tighter leading-none">Rp 505.000</p>
+                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest italic text-orange-400">Tagihan</p>
+                                    <p class="font-black text-gray-900 text-lg tracking-tighter leading-none">Rp 185.000</p>
                                 </div>
                             </div>
 
                             <div class="flex flex-col sm:flex-row items-center justify-between mt-8 pt-6 border-t border-gray-50 gap-4">
-                                <p class="text-[10px] text-gray-400 italic">Pesanan otomatis selesai dalam <span class="text-orange-500 font-black tracking-tighter">2 Hari</span></p>
+                                <div class="flex items-center gap-2 text-orange-600">
+                                    <i class="fa-solid fa-triangle-exclamation text-xs"></i>
+                                    <p class="text-[10px] font-bold uppercase tracking-tighter">Konfirmasi sebelum stok habis</p>
+                                </div>
                                 <div class="flex items-center gap-3 w-full sm:w-auto">
                                     <button class="btnShowInvoice flex-1 sm:flex-none px-6 py-3 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:bg-stone-50 rounded-xl transition-all border border-stone-100">
                                         Detail Invoice
                                     </button>
-                                    <button class="flex-1 sm:flex-none px-6 py-3 text-[10px] font-black uppercase tracking-widest bg-green-700 text-white rounded-xl hover:bg-green-800 transition-all shadow-lg shadow-green-100">
-                                        Terima Pesanan
-                                    </button>
+                                    <a href="https://wa.me/628111111?text=Halo%20Admin,%20saya%20ingin%20bayar%20pesanan%20#TRX-WAITING" target="_blank" class="flex-1 sm:flex-none px-6 py-3 text-[10px] font-black uppercase tracking-widest bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-all shadow-lg shadow-orange-100 text-center">
+                                        Bayar Sekarang
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden opacity-70 hover:opacity-100 transition-all">
-                        <div class="p-6 md:p-8">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="flex items-center gap-3">
-                                    <span class="text-xs font-black text-gray-900 uppercase italic tracking-tighter">TRX-77210022</span>
-                                    <span class="px-2 py-0.5 bg-stone-100 text-stone-500 text-[8px] font-black rounded-md uppercase tracking-widest">Selesai</span>
-                                </div>
-                                <span class="text-[10px] font-bold text-gray-400 uppercase italic">01 Jan 2026</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-gray-50 rounded-xl overflow-hidden grayscale">
-                                        <img src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=100&q=80" class="w-full h-full object-cover">
-                                    </div>
-                                    <p class="text-xs font-bold text-gray-500 italic">Vintage Gold Watch...</p>
-                                </div>
-                                <button class="btnShowInvoice text-[10px] font-black text-green-700 uppercase tracking-widest hover:underline">
-                                    Detail Invoice
-                                </button>
-                            </div>
-                        </div>
                     </div>
-
-                </div>
             </div>
         </div>
     </div>
@@ -113,7 +88,7 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 border-b border-stone-100 pb-6 gap-4">
                 <div>
                     <h2 class="text-3xl md:text-4xl font-playfair font-black text-gray-900 italic leading-none">INVOICE</h2>
-                    <p class="text-[9px] md:text-[11px] font-black text-green-700 uppercase tracking-[0.2em] mt-2 italic">ID: #TRX-2026-MULTI</p>
+                    <p class="text-[9px] md:text-[11px] font-black text-green-700 uppercase tracking-[0.2em] mt-2 italic">ID: #TRX-2026-WAITING</p>
                 </div>
                 <div class="sm:text-right">
                     <p class="text-[9px] font-black text-stone-400 uppercase tracking-widest italic">Tgl. Pemesanan</p>
@@ -125,7 +100,7 @@
                 <div>
                     <p class="text-[9px] font-black text-stone-400 uppercase tracking-widest mb-1 italic text-green-700">Tujuan:</p>
                     <p class="font-bold text-gray-900 text-sm md:text-base">Andi Budiman</p>
-                    <p class="text-[10px] md:text-xs text-gray-500 leading-tight italic">Jl. Kenangan No. 45, Coblong, Bandung 40132</p>
+                    <p class="text-[10px] md:text-xs text-gray-500 leading-tight italic text-stone-400">Jl. Kenangan No. 45, Coblong, Bandung</p>
                 </div>
                 <div class="sm:text-right">
                     <p class="text-[9px] font-black text-stone-400 uppercase tracking-widest mb-1 italic text-green-700">Status:</p>
@@ -135,7 +110,6 @@
 
             <div class="space-y-4 mb-8">
                 <p class="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-2 italic">Daftar Barang Pesanan:</p>
-
                 <div class="bg-stone-50 rounded-2xl p-4 flex justify-between items-center border border-stone-100">
                     <div>
                         <p class="font-bold text-gray-900 text-xs md:text-sm italic">Vintage Denim Jacket</p>
@@ -143,45 +117,24 @@
                     </div>
                     <p class="font-black text-gray-900 text-xs md:text-sm tracking-tight">Rp 185.000</p>
                 </div>
-
-                <div class="bg-stone-50 rounded-2xl p-4 flex justify-between items-center border border-stone-100">
-                    <div>
-                        <p class="font-bold text-gray-900 text-xs md:text-sm italic">Vintage Gold Watch</p>
-                        <p class="text-[9px] text-stone-500 uppercase font-black">SecondBrand • 1 Unit</p>
-                    </div>
-                    <p class="font-black text-gray-900 text-xs md:text-sm tracking-tight">Rp 320.000</p>
-                </div>
             </div>
 
             <div class="pt-6 border-t-2 border-dashed border-stone-100 flex justify-between items-center mb-10">
-                <p class="text-[10px] font-black text-stone-400 uppercase tracking-widest italic">Total Tagihan</p>
-                <p class="text-3xl md:text-4xl font-black text-green-700 tracking-tighter leading-none">Rp 505.000</p>
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-widest italic text-stone-400">Total Tagihan</p>
+                <p class="text-3xl md:text-4xl font-black text-green-700 tracking-tighter leading-none">Rp 185.000</p>
             </div>
 
             <div class="space-y-3">
-                <p class="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em] text-center mb-4 italic">Pilih Toko untuk Konfirmasi:</p>
+                <p class="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em] text-center mb-4 italic">Pilih Toko untuk Konfirmasi Pembayaran:</p>
 
-                <a href="https://wa.me/628111111?text=Halo%20ThriftVibe,%20saya%20ingin%20konfirmasi%20untuk%20produk%20Denim%20#TRX-MULTI"
+                <a href="https://wa.me/628111111?text=Halo%20Admin,%20saya%20ingin%20konfirmasi%20pembayaran%20untuk%20#TRX-2026-WAITING"
                    target="_blank"
                    class="flex items-center justify-between px-6 py-4 bg-white border-2 border-green-700/10 hover:border-green-700 rounded-2xl transition-all group shadow-sm">
                     <div class="flex items-center gap-4">
                         <i class="fa-brands fa-whatsapp text-2xl text-green-600"></i>
                         <div class="text-left leading-tight">
-                            <p class="text-[9px] font-black text-green-700 uppercase tracking-tighter mb-0.5">Chat Admin Toko 1</p>
+                            <p class="text-[9px] font-black text-green-700 uppercase tracking-tighter mb-0.5">Chat Admin Toko</p>
                             <p class="font-bold text-gray-900 text-sm italic">ThriftVibe Official</p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-stone-300 group-hover:text-green-700 group-hover:translate-x-1 transition-all"></i>
-                </a>
-
-                <a href="https://wa.me/628222222?text=Halo%20SecondBrand,%20saya%20ingin%20konfirmasi%20untuk%20produk%20Watch%20#TRX-MULTI"
-                   target="_blank"
-                   class="flex items-center justify-between px-6 py-4 bg-white border-2 border-green-700/10 hover:border-green-700 rounded-2xl transition-all group shadow-sm">
-                    <div class="flex items-center gap-4">
-                        <i class="fa-brands fa-whatsapp text-2xl text-green-600"></i>
-                        <div class="text-left leading-tight">
-                            <p class="text-[9px] font-black text-green-700 uppercase tracking-tighter mb-0.5">Chat Admin Toko 2</p>
-                            <p class="font-bold text-gray-900 text-sm italic">SecondBrand Jkt</p>
                         </div>
                     </div>
                     <i class="fa-solid fa-chevron-right text-stone-300 group-hover:text-green-700 group-hover:translate-x-1 transition-all"></i>
@@ -192,10 +145,6 @@
                     <span>Download Detail Invoice</span>
                 </button>
             </div>
-
-            <p class="text-center text-[8px] text-stone-400 mt-8 uppercase tracking-widest italic">
-                Invoice generated at: {{ date('H:i:s') }}
-            </p>
         </div>
     </div>
 </div>
@@ -204,23 +153,16 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-        // Tampilkan Modal saat klik tombol Detail Invoice
         $('.btnShowInvoice').on('click', function() {
             $('#modalInvoice').removeClass('hidden').addClass('flex').hide().fadeIn(300);
             $('body').css('overflow', 'hidden');
         });
 
-        // Tutup Modal
         $('#btnCloseModal').on('click', function() {
             $('#modalInvoice').fadeOut(200, function() {
                 $(this).addClass('hidden').removeClass('flex');
                 $('body').css('overflow', 'auto');
             });
-        });
-
-        // Klik Luar area modal untuk menutup
-        $('#modalInvoice').on('click', function(e) {
-            if (e.target === this) $('#btnCloseModal').click();
         });
     });
 </script>

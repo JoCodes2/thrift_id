@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('produk', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('id_kategori')->constrained('kategori')->onDelete('cascade');
-            $table->foreignUuid('id_penjual')->constrained('users')->onDelete('cascade');
+            $table->foreignUuid('id_toko')->constrained('toko')->onDelete('cascade');
             $table->string('nama_produk');
             $table->integer('harga');
-            $table->text('deskripsi')->nullable();
             $table->enum('status_stok', ['tersedia', 'kosong'])->default('tersedia');
+            $table->integer('jumlah_terjual')->default(0);
             $table->timestamps();
         });
     }

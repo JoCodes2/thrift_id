@@ -20,6 +20,17 @@
             font-family: 'Inter', sans-serif;
         }
     </style>
+    <style>
+        /* CSS Tambahan untuk memastikan scrollbar benar-benar hilang tapi tetap berfungsi */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+            -webkit-overflow-scrolling: touch; /* Momentum scroll untuk iOS */
+        }
+    </style>
     <script>
         let appUrl = '{{ env('APP_URL') }}';
     </script>
@@ -121,6 +132,6 @@
          });
      });
  </script>
-    @section('scripts')
+    @yield('scripts')
 </body>
 </html>
