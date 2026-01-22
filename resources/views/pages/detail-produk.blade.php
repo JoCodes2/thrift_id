@@ -13,7 +13,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
             <div class="relative group">
-                <div class="absolute top-6 left-6 z-10">
+                <div class="absolute top-6 left-6 z-10 flex flex-col gap-2">
                     <span class="px-4 py-2 bg-green-700 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl">
                         Tersedia
                     </span>
@@ -28,10 +28,13 @@
 
             <div class="flex flex-col">
                 <div class="mb-6">
-                    <span class="px-4 py-1.5 bg-green-50 text-green-700 rounded-full text-[10px] font-black uppercase tracking-widest border border-green-100">
-                        Outerwear
-                    </span>
-                    <h1 class="text-4xl font-playfair font-bold text-gray-900 mt-4 leading-tight">Vintage Denim Jacket</h1>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="px-4 py-1.5 bg-green-50 text-green-700 rounded-full text-[10px] font-black uppercase tracking-widest border border-green-100">
+                            Outerwear
+                        </span>
+                    </div>
+
+                    <h1 class="text-4xl font-playfair font-bold text-gray-900 leading-tight">Vintage Denim Jacket</h1>
 
                     <div class="flex items-center mt-4 space-x-4">
                         <div class="flex items-center text-orange-400 font-bold">
@@ -43,23 +46,50 @@
                     </div>
                 </div>
 
-                <div class="bg-stone-50 rounded-[2rem] p-8 mb-8 border border-stone-100 relative overflow-hidden">
+                <div class="bg-stone-50 rounded-[2.5rem] p-8 mb-8 border border-stone-100 relative overflow-hidden">
                     <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-100/30 rounded-full blur-2xl"></div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Harga Koleksi</p>
-                    <p class="text-4xl font-black text-gray-900 tracking-tighter">Rp 185.000</p>
+
+                    <div class="relative z-10">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Harga Koleksi</p>
+                        <p class="text-4xl font-black text-gray-900 tracking-tighter">Rp 185.000</p>
+                    </div>
                 </div>
 
-                <div class="flex items-center p-6 border-2 border-gray-50 rounded-3xl mb-8 group hover:border-green-700/10 transition-all duration-300">
-                    <div class="w-14 h-14 rounded-2xl overflow-hidden bg-stone-100 flex-shrink-0 border border-gray-100">
-                        <img src="https://via.placeholder.com/150" alt="Logo Toko" class="w-full h-full object-cover">
+                <div class="flex items-center p-6 border-2 border-stone-100 rounded-[2.5rem] mb-8 group hover:border-green-700/20 hover:bg-green-50/10 transition-all duration-300">
+                    <div class="relative">
+                        <div class="w-16 h-16 rounded-2xl overflow-hidden bg-stone-100 shadow-sm border border-stone-200 p-1 flex-shrink-0">
+                            <img src="https://images.unsplash.com/photo-1541339907198-e08759df9a13?w=200&q=80"
+                                alt="Store Logo"
+                                class="w-full h-full object-cover rounded-xl">
+                        </div>
+                        <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-600 rounded-full border-2 border-white flex items-center justify-center">
+                            <i class="fa-solid fa-check text-[8px] text-white"></i>
+                        </div>
                     </div>
-                    <div class="ml-4 flex-1">
-                        <h4 class="font-bold text-gray-900 leading-tight group-hover:text-green-700 transition-colors">ThriftVibe Official</h4>
-                        <p class="text-[11px] text-gray-400 font-medium mt-1 uppercase tracking-wider">
-                            <i class="fa-solid fa-location-dot mr-1"></i> Kab. Bandung, Jawa Barat
+
+                    <div class="ml-5 flex-1">
+                        <div class="flex items-center">
+                            <h4 class="font-black text-gray-900 leading-tight uppercase tracking-tight group-hover:text-green-700 transition-colors">ThriftVibe Official</h4>
+                        </div>
+
+                        <p class="text-[11px] text-gray-400 font-bold mt-1 uppercase tracking-widest flex items-center">
+                            <i class="fa-solid fa-location-dot mr-1.5 text-green-700"></i> Kab. Bandung, Jawa Barat
                         </p>
+
+                        <div class="flex flex-wrap items-center mt-2 gap-3">
+                            <span class="text-[9px] font-black text-stone-400 uppercase flex items-center">
+                                <i class="fa-solid fa-phone mr-1 text-green-600/50"></i> 0812-3456-7890
+                            </span>
+                            <span class="w-1 h-1 bg-stone-300 rounded-full"></span>
+                            <span class="text-[9px] font-black text-stone-400 uppercase flex items-center">
+                                <i class="fa-solid fa-envelope mr-1 text-green-600/50"></i> thrift@vibe.com
+                            </span>
+                        </div>
                     </div>
-                    <a href="#" class="text-[10px] font-black text-green-700 hover:text-white hover:bg-green-700 uppercase px-5 py-2.5 bg-green-50 rounded-xl transition-all">Toko</a>
+
+                    <a href="{{ url('/detail-toko') }}" class="text-[10px] font-black text-green-700 hover:text-white hover:bg-green-700 uppercase px-6 py-3 bg-white border border-green-100 rounded-xl transition-all shadow-sm shadow-green-100">
+                        Kunjungi Toko
+                    </a>
                 </div>
 
                 <div class="space-y-4">
@@ -68,7 +98,7 @@
                             <i class="fa-solid fa-cart-plus text-lg group-hover:scale-110 transition-transform"></i>
                             <span>Keranjang</span>
                         </button>
-                      <a href="{{ url('/pembayaran') }}" class="py-4 bg-green-700 text-white font-bold rounded-2xl shadow-xl shadow-green-100 hover:bg-green-800 transition-all transform active:scale-95 text-center block">
+                        <a href="{{ url('/pembayaran') }}" class="py-4 bg-green-700 text-white font-bold rounded-2xl shadow-xl shadow-green-100 hover:bg-green-800 transition-all transform active:scale-95 text-center block">
                             Beli Sekarang
                         </a>
                     </div>
@@ -89,17 +119,20 @@
                 </div>
 
                 <div class="bg-stone-50 rounded-3xl p-8 border border-stone-100">
-                    <h4 class="text-sm font-bold text-gray-900 uppercase tracking-widest mb-6">Spesifikasi Barang</h4>
+                    <h4 class="text-sm font-bold text-gray-900 uppercase tracking-widest mb-6 text-stone-400">Spesifikasi Barang</h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div>
                             <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Bahan</p>
-                            <p class="text-sm font-bold text-gray-800">Heavyweight Denim</p> </div>
+                            <p class="text-sm font-bold text-gray-800">Heavyweight Denim</p>
+                        </div>
                         <div>
                             <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Ukuran</p>
-                            <p class="text-sm font-bold text-gray-800">L (P: 70cm, L: 55cm)</p> </div>
+                            <p class="text-sm font-bold text-gray-800">L (P: 70cm, L: 55cm)</p>
+                        </div>
                         <div>
                             <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Kondisi</p>
-                            <p class="text-sm font-bold text-green-700">Sangat Baik (9/10)</p> </div>
+                            <p class="text-sm font-bold text-green-700">Sangat Baik (9/10)</p>
+                        </div>
                     </div>
                 </div>
             </div>

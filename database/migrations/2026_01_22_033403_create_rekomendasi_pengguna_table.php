@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('toko', function (Blueprint $table) {
+        Schema::create('rekomendasi_pengguna', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('nama_toko');
-            $table->string('email_toko');
-            $table->string('no_hp_toko');
-            $table->text('alamat_toko');
-            $table->string('foto');
-            $table->year('tahun_terdaftar');
+            $table->foreignUuid('id_pembeli')->constrained('users');
+            $table->foreignUuid('id_produk')->constrained('produk');
+            $table->float('prediksi_skor');
             $table->timestamps();
         });
     }
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('toko');
+        Schema::dropIfExists('rekomendasi_pengguna');
     }
 };

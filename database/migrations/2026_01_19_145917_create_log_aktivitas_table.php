@@ -17,7 +17,10 @@ return new class extends Migration
             $table->foreignUuid('id_produk')->constrained('produk')->onDelete('cascade');
             $table->enum('jenis_aktivitas', ['lihat', 'tambah_keranjang', 'transaksi']);
             $table->integer('skor_minat');
+            $table->integer('frekuensi')->default(1);
             $table->timestamps();
+
+            $table->unique(['id_pembeli', 'id_produk', 'jenis_aktivitas']);
         });
     }
 

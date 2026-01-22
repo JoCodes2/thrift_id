@@ -22,11 +22,8 @@ Route::get('/keranjang', function () {
 Route::get('/pembayaran', function () {
     return view('pages.pembayaran');
 });
-Route::get('/rating', function () {
-    return view('pages.rating');
-});
-Route::get('/inv', function () {
-    return view('pages.invoice');
+Route::get('/detail-toko', function () {
+    return view('pages.profile-toko');
 });
 
 
