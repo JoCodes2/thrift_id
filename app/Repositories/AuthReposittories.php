@@ -32,6 +32,7 @@ class AuthReposittories implements AuthInterfaces
                     'data' => $user,
                     'status' => 'success',
                     'message' => 'Login success',
+                    'token' => $user->createToken('token')->plainTextToken
                 ]);
             }
         } catch (\Throwable $th) {

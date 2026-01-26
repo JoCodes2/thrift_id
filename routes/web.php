@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\CMS\AuthController;
+use App\Http\Controllers\CMS\KategoriController;
+use App\Http\Controllers\CMS\ProdukController;
+use App\Http\Controllers\CMS\TokoController;
 use App\Http\Controllers\CMS\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +29,18 @@ Route::get('/detail-toko', function () {
     return view('pages.profile-toko');
 });
 
+//admin web
+Route::get('/toko', function () {
+    return view('admin.toko');
+});
+
+Route::get('/kategori', function () {
+    return view('admin.kategori');
+});
+
+Route::get('/produk', function () {
+    return view('admin.produk');
+});
 
 // route auth
 Route::get('/login', function () {
@@ -66,6 +81,30 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::prefix('thrif-id')->group(function () {
         Route::prefix('user')->controller(UserController::class)->group(function () {
             Route::get('/', 'getAllData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+
+        Route::prefix('toko')->controller(TokoController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+
+        Route::prefix('kategori')->controller(KategoriController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+
+        Route::prefix('produk')->controller(ProdukController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
             Route::get('/get/{id}', 'getDataById');
             Route::post('/update/{id}', 'updateData');
             Route::delete('/delete/{id}', 'deleteData');
