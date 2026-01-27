@@ -41,7 +41,7 @@
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="DataModalLabel">Data Toko</h5>
+                    <h5 class="modal-title" id="DataModalLabel">Data Produk</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
@@ -81,10 +81,10 @@
                         {{-- Harga --}}
                         <div class="form-group mb-3">
                             <label for="harga">Harga</label>
-                            <input type="number" class="form-control" name="harga" id="harga"
-                                placeholder="Masukkan harga">
+                            <input type="text" class="form-control" name="harga" id="harga" placeholder="Rp 0">
                             <div class="invalid-feedback" id="harga-error"></div>
                         </div>
+
 
                         {{-- Status Stok --}}
                         <div class="form-group mb-3">
@@ -116,6 +116,13 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
+
+            loadKategori();
+            loadToko();
+
+            function formatRupiah(angka) {
+                return new Intl.NumberFormat('id-ID').format(angka);
+            }
 
             // Fungsi untuk memuat opsi kategori
             function loadKategori() {
@@ -171,7 +178,7 @@
                                 <td>${item.kategori.nama_kategori}</td>
                                 <td>${item.toko.nama_toko}</td>
                                 <td>${item.nama_produk}</td>
-                                <td>${item.harga}</td>
+                                <td>Rp ${formatRupiah(item.harga)}</td>
                                 <td>${item.status_stok}</td>
                                 <td>${item.jumlah_terjual}</td>
 
@@ -211,23 +218,28 @@
             getData();
 
             // create & update
-            $(document).on('click', '#simpanData', function(e) {
-                e.preventDefault();
-                clearErrors();
+            $(document).on('click', '#simpanData', function() {
 
-                let id = $('#id').val();
-                let formData = new FormData($('#produkForm')[0]);
-                let url = id ? `/sitasi/produk/update/${id}` : '/sitasi/produk/create';
+                const formData = new FormData($('#produkForm')[0]);
 
-                loadingAllert();
+                let hargaRaw = $('#harga').val().replace(/[^0-9]/g, '');
+                if (!hargaRaw) {
+                    toastr.error('Harga wajib diisi');
+                    return;
+                }
+
+                formData.set('harga', parseInt(hargaRaw));
+
+                const id = $('#id').val();
+                const url = id ? `/thrif-id/produk/update/${id}` : '/thrif-id/produk/create';
+                const method = id ? 'POST' : 'POST';
 
                 $.ajax({
-                    type: 'POST',
                     url: url,
+                    method: method,
                     data: formData,
-                    contentType: false,
                     processData: false,
-
+                    contentType: false,
                     success: function(response) {
                         Swal.close();
 
@@ -243,26 +255,17 @@
                     },
 
                     error: function(xhr) {
-                        Swal.close();
-
                         if (xhr.status === 422) {
-                            let errors = xhr.responseJSON.errors; // ✅ FIX
-
-                            $.each(errors, function(key, value) {
-                                let input = $('#' + key);
-                                let errorEl = $('#' + key + '-error');
-
-                                input.addClass('is-invalid');
-                                errorEl.text(value[0]);
+                            const errors = xhr.responseJSON.data;
+                            clearErrors();
+                            $.each(errors, function(field, messages) {
+                                $(`#${field}`).addClass('is-invalid');
+                                $(`#${field}-error`).text(messages[0]);
                             });
-
-                            return;
+                        } else {
+                            toastr.error('Terjadi kesalahan saat menyimpan data.');
                         }
-
-                        console.error(xhr.responseText);
-                        errorAlert();
                     }
-
                 });
             });
 
@@ -272,19 +275,89 @@
                 $('.invalid-feedback').text('');
             }
 
-            $(document).on('input change', '#produkForm input, #produkForm textarea', function() {
-                $(this).removeClass('is-invalid');
-                $('#' + this.id + '-error').text('');
+            $(document).on('input change', '#produkForm input, #produkForm textarea, #produkForm select',
+                function() {
+                    $(this).removeClass('is-invalid');
+                    $('#' + this.id + '-error').text('');
+                });
+
+            $('#harga').on('input', function() {
+                let value = $(this).val().replace(/[^0-9]/g, '');
+                if (value) {
+                    $(this).val('Rp ' + formatRupiah(value));
+                } else {
+                    $(this).val('');
+                }
             });
+
+
 
             // Tampilkan modal tambah
             $(document).on('click', '#btnTambah', function() {
                 $('#produkForm')[0].reset(); // reset form
                 $('#id').val('');
                 clearErrors();
-                $('#preview-foto').addClass('d-none').attr('src', '');
-                $('#DataModalLabel').text('Tambah produk');
+                $('#DataModalLabel').text('Tambah Produk');
                 $('#DataModal').modal('show');
+            });
+
+            // Edit data
+            $(document).on('click', '.edit-btn', function() {
+                let id = $(this).data('id');
+                $.ajax({
+                    url: `/thrif-id/produk/get/${id}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.code === 200) {
+                            let data = response.data;
+                            $('#id').val(data.id);
+                            $('#id_kategori').val(data.id_kategori);
+                            $('#id_toko').val(data.id_toko);
+                            $('#nama_produk').val(data.nama_produk);
+                            $('#harga').val('Rp ' + formatRupiah(data.harga));
+                            $('#status_stok').val(data.status_stok);
+                            $('#jumlah_terjual').val(data.jumlah_terjual);
+                            $('#DataModalLabel').text('Edit Produk');
+                            $('#DataModal').modal('show');
+                        }
+                    },
+                    error: function() {
+                        errorAlert('Gagal mengambil data untuk edit');
+                    }
+                });
+            });
+
+            // Delete data
+            $(document).on('click', '.delete-confirm', function() {
+                let id = $(this).data('id');
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/thrif-id/produk/delete/${id}`,
+                            method: 'DELETE',
+                            dataType: 'json',
+                            success: function(response) {
+                                if (response.code === 200) {
+                                    successAlert('Data berhasil dihapus!');
+                                    getData();
+                                }
+                            },
+                            error: function() {
+                                errorAlert('Gagal menghapus data');
+                            }
+                        });
+                    }
+                });
             });
 
             // Reset saat modal ditutup

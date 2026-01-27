@@ -3,8 +3,8 @@
     <div class="app-brand demo">
         <a href="/" class="app-brand-link">
             <span class="app-brand-logo demo">
-                {{-- <img src="{{ asset('assets/assets/stmik.png') }}" alt="Logo" class="img-fluid" width="50" --}}
-                height="50">
+                <img src="{{ asset('assets/img/thrift.png') }}" alt="Logo" class="img-fluid" width="50"
+                    height="50">
             </span>
             <span class="text-start app-brand-text fw-bold ms-2">
                 <small>Filtering</small><br>
@@ -53,8 +53,8 @@
                 <div>Kategori</div>
             </a>
         </li>
-        <li class="menu-item {{ request()->is('produk') ? 'active' : '' }}">
-            <a href="/produk" class="menu-link">
+        <li class="menu-item {{ request()->is('produk-admin') ? 'active' : '' }}">
+            <a href="/produk-admin" class="menu-link">
                 <i class="menu-icon fa-solid fa-box-open"></i>
                 <div>Produk</div>
             </a>

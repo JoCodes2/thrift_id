@@ -4,12 +4,18 @@ namespace App\Http\Controllers\CMS;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProdukRequest;
+use App\Repositories\ProdukRepositories;
 
 use Illuminate\Http\Request;
 
 class ProdukController extends Controller
 {
     protected $ProdukRepo;
+
+    public function __construct(ProdukRepositories $ProdukRepo)
+    {
+        $this->ProdukRepo = $ProdukRepo;
+    }
 
     public function getAllData()
     {

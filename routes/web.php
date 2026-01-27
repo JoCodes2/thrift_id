@@ -38,7 +38,7 @@ Route::get('/kategori', function () {
     return view('admin.kategori');
 });
 
-Route::get('/produk', function () {
+Route::get('/produk-admin', function () {
     return view('admin.produk');
 });
 
