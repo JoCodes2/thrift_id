@@ -58,7 +58,8 @@
                         <div class="relative z-10">
                             <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Harga Koleksi
                             </p>
-                            <p class="text-4xl font-black text-gray-900 tracking-tighter">Rp 185.000</p>
+                            <p class="text-4xl font-black text-gray-900 tracking-tighter">Rp
+                                {{ number_format($produk->harga, 0, ',', '.') }}</p>
                         </div>
                     </div>
 
@@ -67,7 +68,7 @@
                         <div class="relative">
                             <div
                                 class="w-16 h-16 rounded-2xl overflow-hidden bg-stone-100 shadow-sm border border-stone-200 p-1 flex-shrink-0">
-                                <img src="{{ asset('uploads/gambar/' . ($produk->toko->logo ?? 'default.jpg')) }}"
+                                <img src="{{ asset('uploads/foto/' . ($produk->toko->foto ?? 'default.jpg')) }}"
                                     alt="{{ $produk->toko->nama_toko ?? 'Logo Toko' }}"
                                     class="w-full h-full object-cover rounded-xl">
                             </div>
@@ -86,16 +87,18 @@
 
                             <p class="text-[11px] text-gray-400 font-bold mt-1 uppercase tracking-widest flex items-center">
                                 <i class="fa-solid fa-location-dot mr-1.5 text-green-700"></i>
-                                {{ $produk->toko->alamat ?? 'Alamat tidak tersedia' }}
+                                {{ $produk->toko->alamat_toko ?? 'Alamat tidak tersedia' }}
                             </p>
 
                             <div class="flex flex-wrap items-center mt-2 gap-3">
                                 <span class="text-[9px] font-black text-stone-400 uppercase flex items-center">
-                                    <i class="fa-solid fa-phone mr-1 text-green-600/50"></i> 0812-3456-7890
+                                    <i class="fa-solid fa-phone mr-1 text-green-600/50"></i>
+                                    {{ $produk->toko->no_hp_toko ?? '0812-3456-7890' }}
                                 </span>
                                 <span class="w-1 h-1 bg-stone-300 rounded-full"></span>
                                 <span class="text-[9px] font-black text-stone-400 uppercase flex items-center">
-                                    <i class="fa-solid fa-envelope mr-1 text-green-600/50"></i> thrift@vibe.com
+                                    <i class="fa-solid fa-envelope mr-1 text-green-600/50"></i>
+                                    {{ $produk->toko->email_toko ?? 'thrift@vibe.com' }}
                                 </span>
                             </div>
                         </div>
