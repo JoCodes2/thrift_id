@@ -35,6 +35,15 @@ class ProdukController extends Controller
         return response()->json($produk);
     }
 
+    public function show($id)
+    {
+        $produk = $this->ProdukRepo->getDataByIdForWeb($id);
+        if (!$produk) {
+            abort(404);
+        }
+        return view('pages.detail-produk', compact('produk'));
+    }
+
     public function getAllData()
     {
         return $this->ProdukRepo->getAllData();

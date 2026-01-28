@@ -73,7 +73,7 @@
                         <div
                             class="bg-white rounded-[2rem] overflow-hidden border border-gray-50 shadow-sm hover:shadow-2xl transition-all duration-500 group relative">
                             <div class="relative h-72 overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&q=80"
+                                <img src="{{ asset('uploads/gambar/' . ($item->deskrisp->first()->gambar ?? 'default.jpg')) }}"
                                     alt="{{ $item->nama_produk }}"
                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
 
@@ -119,7 +119,7 @@
                                         <i class="fa-solid fa-cart-plus"></i>
                                     </button>
 
-                                    <a href="{{ url('/detail-produk') }}"
+                                    <a href="{{ url('/detail-produk/' . $item->id) }}"
                                         class="col-span-4 bg-green-700 hover:bg-green-800 text-white font-bold text-sm h-12 rounded-2xl transition-all shadow-lg shadow-green-100 flex items-center justify-center space-x-2">
                                         <i class="fa-solid fa-eye"></i>
                                         <span>Lihat Detail</span>
@@ -177,10 +177,13 @@
                 let html = '';
                 if (products.length > 0) {
                     products.forEach(function(item) {
+                        let imageUrl = item.deskrisp && item.deskrisp.length > 0 ?
+                            '{{ asset('uploads/gambar/') }}/' + item.deskrisp[0].gambar :
+                            '{{ asset('uploads/gambar/default.jpg') }}';
                         html += `
                     <div class="bg-white rounded-[2rem] overflow-hidden border border-gray-50 shadow-sm hover:shadow-2xl transition-all duration-500 group relative">
                         <div class="relative h-72 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&q=80" alt="${item.nama_produk}"
+                            <img src="${imageUrl}" alt="${item.nama_produk}"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
 
                             <div class="absolute top-4 left-4">
@@ -221,7 +224,7 @@
                                     <i class="fa-solid fa-cart-plus"></i>
                                 </button>
 
-                                <a href="{{ url('/detail-produk') }}" class="col-span-4 bg-green-700 hover:bg-green-800 text-white font-bold text-sm h-12 rounded-2xl transition-all shadow-lg shadow-green-100 flex items-center justify-center space-x-2">
+                                <a href="{{ url('/detail-produk/') }}/${item.id}" class="col-span-4 bg-green-700 hover:bg-green-800 text-white font-bold text-sm h-12 rounded-2xl transition-all shadow-lg shadow-green-100 flex items-center justify-center space-x-2">
                                     <i class="fa-solid fa-eye"></i>
                                     <span>Lihat Detail</span>
                                 </a>

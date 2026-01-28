@@ -16,9 +16,7 @@ Route::get('/', function () {
 });
 Route::get('/produk', [App\Http\Controllers\CMS\ProdukController::class, 'index'])->name('produk.index');
 Route::get('/produk/filter', [App\Http\Controllers\CMS\ProdukController::class, 'filter'])->name('produk.filter');
-Route::get('/detail-produk', function () {
-    return view('pages.detail-produk');
-});
+Route::get('/detail-produk/{id}', [App\Http\Controllers\CMS\ProdukController::class, 'show'])->name('produk.show');
 Route::get('/keranjang', function () {
     return view('pages.keranjang');
 });

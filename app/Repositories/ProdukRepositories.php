@@ -47,6 +47,11 @@ class ProdukRepositories implements ProdukInterfaces
         return $query->get();
     }
 
+    public function getDataByIdForWeb($id)
+    {
+        return ProdukModel::with(['kategori', 'toko', 'deskrisp'])->find($id);
+    }
+
     public function createData(ProdukRequest $request)
     {
         try {
@@ -68,7 +73,7 @@ class ProdukRepositories implements ProdukInterfaces
 
     public function getDataById($id)
     {
-        $data = $this->ProdukModel::find($id);
+        $data = $this->ProdukModel::with(['kategori', 'toko', 'deskrisp'])->find($id);
         if (!$data) {
             return $this->idOrDataNotFound();
         }
