@@ -3,7 +3,7 @@
     <div class="app-brand demo">
         <a href="/" class="app-brand-link">
             <span class="app-brand-logo demo">
-                <img src="{{ asset('assets/assets/stmik.png') }}" alt="Logo" class="img-fluid" width="50"
+                <img src="{{ asset('assets/img/thrift.png') }}" alt="Logo" class="img-fluid" width="50"
                     height="50">
             </span>
             <span class="text-start app-brand-text fw-bold ms-2">
@@ -40,6 +40,26 @@
                 <div>Pengguna</div>
             </a>
         </li>
+
+        <li class="menu-item {{ request()->is('toko') ? 'active' : '' }}">
+            <a href="/toko" class="menu-link">
+                <i class="menu-icon fa-solid fa-store"></i>
+                <div>Toko</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('kategori') ? 'active' : '' }}">
+            <a href="/kategori" class="menu-link">
+                <i class="menu-icon fa-solid fa-award"></i>
+                <div>Kategori</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('produk-admin') ? 'active' : '' }}">
+            <a href="/produk-admin" class="menu-link">
+                <i class="menu-icon fa-solid fa-box-open"></i>
+                <div>Produk</div>
+            </a>
+        </li>
+
 
     </ul>
 </aside>
