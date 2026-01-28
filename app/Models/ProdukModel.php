@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProdukModel extends Model
 {
@@ -34,5 +35,10 @@ class ProdukModel extends Model
     public function toko(): BelongsTo
     {
         return $this->belongsTo(TokoModel::class, 'id_toko');
+    }
+
+    public function deskrisp(): HasMany
+    {
+        return $this->hasMany(DeskripsiprodukModel::class, 'produk_id');
     }
 }

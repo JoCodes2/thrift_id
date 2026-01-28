@@ -27,6 +27,11 @@ class KategoriRepositories implements KategoriInterfaces
         return $data->isEmpty() ? $this->dataNotFound() : $this->success($data);
     }
 
+    public function getAllForWeb()
+    {
+        return $this->KategoriModel::all();
+    }
+
     public function createData(KategoriRequest $request)
     {
         try {

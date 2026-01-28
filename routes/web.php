@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CMS\AuthController;
+use App\Http\Controllers\CMS\DeskripsiprodukController;
 use App\Http\Controllers\CMS\KategoriController;
 use App\Http\Controllers\CMS\ProdukController;
 use App\Http\Controllers\CMS\TokoController;
@@ -13,9 +14,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('pages.home');
 });
-Route::get('/produk', function () {
-    return view('pages.produk');
-});
+Route::get('/produk', [App\Http\Controllers\CMS\ProdukController::class, 'index'])->name('produk.index');
+Route::get('/produk/filter', [App\Http\Controllers\CMS\ProdukController::class, 'filter'])->name('produk.filter');
 Route::get('/detail-produk', function () {
     return view('pages.detail-produk');
 });
@@ -102,10 +102,19 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::delete('/delete/{id}', 'deleteData');
         });
 
-        Route::prefix('produk')->controller(ProdukController::class)->group(function () {
+        Route::prefix('produk-admin')->controller(ProdukController::class)->group(function () {
             Route::get('/', 'getAllData');
             Route::post('/create', 'createData');
             Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+
+        Route::prefix('deskripsi-produk')->controller(DeskripsiprodukController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::get('/get-by-produk/{produkId}', 'getByProdukId');
             Route::post('/update/{id}', 'updateData');
             Route::delete('/delete/{id}', 'deleteData');
         });
