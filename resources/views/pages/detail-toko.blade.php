@@ -78,9 +78,14 @@
                     <div
                         class="bg-white rounded-[2rem] overflow-hidden border border-gray-50 shadow-sm hover:shadow-2xl transition-all duration-500 group relative flex flex-col">
                         <div class="relative h-72 overflow-hidden">
-                            <img src="{{ asset('uploads/gambar/' . ($item->deskrisp->first()->gambar ?? 'default.jpg')) }}"
-                                alt="Product"
-                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            @if ($item->deskrisp->first() && $item->deskrisp->first()->gambar)
+                                <img src="{{ asset('uploads/gambar/' . $item->deskrisp->first()->gambar) }}" alt="Product"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            @else
+                                <div class="w-full h-full bg-stone-100 flex items-center justify-center">
+                                    <span class="text-stone-400 font-bold text-sm">Foto produk tidak ada</span>
+                                </div>
+                            @endif
 
                             <div class="absolute top-4 left-4">
                                 <span
