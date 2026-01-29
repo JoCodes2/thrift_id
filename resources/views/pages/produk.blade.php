@@ -101,9 +101,10 @@
                                 </div>
 
                                 <h3 class="font-bold text-gray-900 text-lg mb-1 truncate">{{ $item->nama_produk }}</h3>
-                                <p class="text-[10px] text-gray-400 mb-4 uppercase font-bold italic">
+                                <a href="{{ url('/detail-toko/' . $item->toko->id) }}"
+                                    class="text-[10px] text-gray-400 mb-4 uppercase font-bold italic hover:text-green-700 transition-colors">
                                     <i class="fa-solid fa-shop mr-1"></i> {{ $item->toko->nama_toko ?? 'Nama Toko' }}
-                                </p>
+                                </a>
 
                                 <div class="flex items-center justify-between mb-6">
                                     <p class="text-2xl font-black text-gray-900 tracking-tight">Rp
