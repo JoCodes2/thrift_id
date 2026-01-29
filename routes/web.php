@@ -28,7 +28,7 @@ Route::get('/detail-toko', function () {
     $toko = App\Models\TokoModel::first();
     return redirect('/detail-toko/' . $toko->id);
 });
-Route::get('/detail-toko/{id}', [PageController::class, 'profileToko']);
+Route::get('/detail-toko/{id}', [PageController::class, 'detailToko']);
 
 //admin web
 Route::get('/toko', function () {

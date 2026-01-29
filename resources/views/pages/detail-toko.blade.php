@@ -10,7 +10,7 @@
                     <div class="relative">
                         <div
                             class="w-32 h-32 md:w-40 md:h-40 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl ring-1 ring-stone-100">
-                            <img src="{{ $toko->foto ? asset('storage/' . $toko->foto) : 'https://images.unsplash.com/photo-1541339907198-e08759df9a13?w=400&q=80' }}"
+                            <img src="{{ $toko->foto ? asset('uploads/foto/' . $toko->foto) : 'https://images.unsplash.com/photo-1541339907198-e08759df9a13?w=400&q=80' }}"
                                 alt="Logo Toko" class="w-full h-full object-cover">
                         </div>
                         <div
@@ -78,7 +78,8 @@
                     <div
                         class="bg-white rounded-[2rem] overflow-hidden border border-gray-50 shadow-sm hover:shadow-2xl transition-all duration-500 group relative flex flex-col">
                         <div class="relative h-72 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&q=80" alt="Product"
+                            <img src="{{ asset('uploads/gambar/' . ($item->deskrisp->first()->gambar ?? 'default.jpg')) }}"
+                                alt="Product"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
 
                             <div class="absolute top-4 left-4">
