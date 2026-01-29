@@ -23,15 +23,101 @@
                             <th>Harga</th>
                             <th>Status Stok</th>
                             <th>Jumlah Terjual</th>
+                            <th>Deskripsi</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tBody">
                         <tr>
-                            <td colspan="8" class="text-center">Memuat data...</td>
+                            <td colspan="9" class="text-center">Memuat data...</td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Deskripsi Tambah --}}
+    <div class="modal fade" id="DeskripsiModal" tabindex="-1" aria-labelledby="DeskripsiModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="DeskripsiModalLabel">Tambah Deskripsi Produk</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="deskripsiForm" method="POST">
+                        @csrf
+                        <input type="hidden" id="produk_id" name="produk_id">
+
+                        {{-- Deskripsi --}}
+                        <div class="form-group mb-3">
+                            <label for="deskripsi">Deskripsi</label>
+                            <textarea class="form-control" name="deskripsi" id="deskripsi" rows="3" placeholder="Masukkan deskripsi produk"></textarea>
+                            <div class="invalid-feedback" id="deskripsi-error"></div>
+                        </div>
+
+                        {{-- Gambar --}}
+                        <div class="form-group mb-3">
+                            <label for="gambar">Gambar</label>
+                            <input type="file" class="form-control" name="gambar" id="gambar" accept="image/*">
+                            <div class="invalid-feedback" id="gambar-error"></div>
+                        </div>
+
+                        {{-- Bahan --}}
+                        <div class="form-group mb-3">
+                            <label for="bahan">Bahan</label>
+                            <input type="text" class="form-control" name="bahan" id="bahan"
+                                placeholder="Masukkan bahan">
+                            <div class="invalid-feedback" id="bahan-error"></div>
+                        </div>
+
+                        {{-- Ukuran --}}
+                        <div class="form-group mb-3">
+                            <label for="ukuran">Ukuran</label>
+                            <input type="text" class="form-control" name="ukuran" id="ukuran"
+                                placeholder="Masukkan ukuran">
+                            <div class="invalid-feedback" id="ukuran-error"></div>
+                        </div>
+
+                        {{-- Kondisi --}}
+                        <div class="form-group mb-3">
+                            <label for="kondisi">Kondisi</label>
+                            <input type="text" class="form-control" name="kondisi" id="kondisi"
+                                placeholder="Masukkan kondisi">
+                            <div class="invalid-feedback" id="kondisi-error"></div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="simpanDeskripsi">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Deskripsi Lihat --}}
+    <div class="modal fade" id="LihatDeskripsiModal" tabindex="-1" aria-labelledby="LihatDeskripsiModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="LihatDeskripsiModalLabel">Detail Deskripsi Produk</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="deskripsiDetail">
+                        <!-- Data akan diisi oleh JavaScript -->
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
             </div>
         </div>
     </div>
@@ -81,7 +167,8 @@
                         {{-- Harga --}}
                         <div class="form-group mb-3">
                             <label for="harga">Harga</label>
-                            <input type="text" class="form-control" name="harga" id="harga" placeholder="Rp 0">
+                            <input type="text" class="form-control" name="harga" id="harga"
+                                placeholder="Rp 0">
                             <div class="invalid-feedback" id="harga-error"></div>
                         </div>
 
@@ -166,13 +253,21 @@
             // Ambil data
             function getData() {
                 $.ajax({
-                    url: "/thrif-id/produk",
+                    url: "/thrif-id/produk-admin",
                     method: "GET",
                     dataType: "json",
                     success: function(response) {
                         console.log(response);
                         let tableBody = "";
                         $.each(response.data, function(index, item) {
+                            let deskripsiBtn = '';
+                            if (item.deskrisp && item.deskrisp.length > 0) {
+                                deskripsiBtn =
+                                    `<button type="button" class="btn btn-outline-info btn-sm lihat-deskripsi-btn" data-id="${item.id}" title="Lihat Deskripsi"><i class="fas fa-eye"></i></button>`;
+                            } else {
+                                deskripsiBtn =
+                                    `<button type="button" class="btn btn-outline-success btn-sm tambah-deskripsi-btn" data-id="${item.id}" title="Tambah Deskripsi"><i class="fas fa-plus"></i></button>`;
+                            }
                             tableBody += `<tr>
                                 <td>${index + 1}</td>
                                 <td>${item.kategori.nama_kategori}</td>
@@ -181,6 +276,7 @@
                                 <td>Rp ${formatRupiah(item.harga)}</td>
                                 <td>${item.status_stok}</td>
                                 <td>${item.jumlah_terjual}</td>
+                                <td>${deskripsiBtn}</td>
 
 
                                 <td>
@@ -231,7 +327,7 @@
                 formData.set('harga', parseInt(hargaRaw));
 
                 const id = $('#id').val();
-                const url = id ? `/thrif-id/produk/update/${id}` : '/thrif-id/produk/create';
+                const url = id ? `/thrif-id/produk-admin/update/${id}` : '/thrif-id/produk-admin/create';
                 const method = id ? 'POST' : 'POST';
 
                 $.ajax({
@@ -305,7 +401,7 @@
             $(document).on('click', '.edit-btn', function() {
                 let id = $(this).data('id');
                 $.ajax({
-                    url: `/thrif-id/produk/get/${id}`,
+                    url: `/thrif-id/produk-admin/get/${id}`,
                     method: 'GET',
                     dataType: 'json',
                     success: function(response) {
@@ -343,7 +439,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: `/thrif-id/produk/delete/${id}`,
+                            url: `/thrif-id/produk-admin/delete/${id}`,
                             method: 'DELETE',
                             dataType: 'json',
                             success: function(response) {
@@ -374,6 +470,165 @@
                     e.preventDefault();
                     $('#simpanData').click();
                 }
+            });
+
+            // Tambah Deskripsi
+            $(document).on('click', '.tambah-deskripsi-btn', function() {
+                let produkId = $(this).data('id');
+                $('#produk_id').val(produkId);
+                $('#deskripsiForm')[0].reset();
+                clearDeskripsiErrors();
+                $('#DeskripsiModalLabel').text('Tambah Deskripsi Produk');
+                $('#DeskripsiModal').modal('show');
+            });
+
+            // Lihat Deskripsi
+            $(document).on('click', '.lihat-deskripsi-btn', function() {
+                let produkId = $(this).data('id');
+                $.ajax({
+                    url: `/thrif-id/deskripsi-produk/get-by-produk/${produkId}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.code === 200 && response.data.length > 0) {
+                            let data = response.data[0];
+                            let detailHtml = `
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-12 mb-4">
+                                            <div class="card border-0 bg-light">
+                                                <div class="card-body">
+                                                    <h6 class="card-title text-primary mb-2">
+                                                        <i class="fas fa-align-left me-2"></i>Deskripsi Produk
+                                                    </h6>
+                                                    <p class="card-text">${data.deskripsi || '<em class="text-muted">Tidak ada deskripsi</em>'}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card border-0 bg-light h-100">
+                                                <div class="card-body text-center">
+                                                    <h6 class="card-title text-primary mb-3">
+                                                        <i class="fas fa-image me-2"></i>Gambar Produk
+                                                    </h6>
+                                                    ${data.gambar ? `<img src="/uploads/gambar/${data.gambar}" alt="Gambar Produk" class="img-fluid rounded shadow-sm" style="max-height: 200px;">` : '<div class="text-muted"><i class="fas fa-image fa-3x mb-2"></i><br>Tidak ada gambar</div>'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card border-0 bg-light h-100">
+                                                <div class="card-body">
+                                                    <h6 class="card-title text-primary mb-3">
+                                                        <i class="fas fa-info-circle me-2"></i>Detail Produk
+                                                    </h6>
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <strong>Bahan:</strong><br>
+                                                            <span class="badge bg-secondary">${data.bahan || 'Tidak ada'}</span>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <strong>Ukuran:</strong><br>
+                                                            <span class="badge bg-info">${data.ukuran || 'Tidak ada'}</span>
+                                                        </div>
+                                                        <div class="col-12 mt-2">
+                                                            <strong>Kondisi:</strong><br>
+                                                            <span class="badge bg-success">${data.kondisi || 'Tidak ada'}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            $('#deskripsiDetail').html(detailHtml);
+                            $('#produk_id').val(produkId);
+                            $('#LihatDeskripsiModal').modal('show');
+                        } else {
+                            toastr.error('Data deskripsi tidak ditemukan');
+                        }
+                    },
+                    error: function() {
+                        toastr.error('Gagal mengambil data deskripsi');
+                    }
+                });
+            });
+
+            // // Edit Deskripsi dari modal lihat
+            // $(document).on('click', '#editDeskripsi', function() {
+            //     let produkId = $('#produk_id').val();
+            //     $.ajax({
+            //         url: `/thrif-id/deskripsi-produk/get-by-produk/${produkId}`,
+            //         method: 'GET',
+            //         dataType: 'json',
+            //         success: function(response) {
+            //             if (response.code === 200 && response.data.length > 0) {
+            //                 let data = response.data[0];
+            //                 $('#produk_id').val(data.produk_id);
+            //                 $('#deskripsi').val(data.deskripsi);
+            //                 $('#bahan').val(data.bahan);
+            //                 $('#ukuran').val(data.ukuran);
+            //                 $('#kondisi').val(data.kondisi);
+            //                 $('#LihatDeskripsiModal').modal('hide');
+            //                 $('#DeskripsiModalLabel').text('Edit Deskripsi Produk');
+            //                 $('#DeskripsiModal').modal('show');
+            //             }
+            //         },
+            //         error: function() {
+            //             toastr.error('Gagal mengambil data untuk edit');
+            //         }
+            //     });
+            // });
+
+            // Simpan Deskripsi
+            $(document).on('click', '#simpanDeskripsi', function() {
+                const formData = new FormData($('#deskripsiForm')[0]);
+                const produkId = $('#produk_id').val();
+
+                $.ajax({
+                    url: `/thrif-id/deskripsi-produk/create`,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.code === 200) {
+                            successAlert('Deskripsi berhasil disimpan!');
+                            $('#DeskripsiModal').modal('hide');
+                            location.reload();
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.data;
+                            clearDeskripsiErrors();
+                            $.each(errors, function(field, messages) {
+                                $(`#${field}`).addClass('is-invalid');
+                                $(`#${field}-error`).text(messages[0]);
+                            });
+                        } else {
+                            toastr.error('Terjadi kesalahan saat menyimpan deskripsi.');
+                        }
+                    }
+                });
+            });
+
+            function clearDeskripsiErrors() {
+                $('#deskripsiForm .is-invalid').removeClass('is-invalid');
+                $('#deskripsiForm .invalid-feedback').text('');
+            }
+
+            $(document).on('input change',
+                '#deskripsiForm input:not([type="file"]), #deskripsiForm textarea, #deskripsiForm select',
+                function() {
+                    $(this).removeClass('is-invalid');
+                    $('#' + this.id + '-error').text('');
+                });
+
+            // Reset modal deskripsi saat ditutup
+            $('#DeskripsiModal').on('hidden.bs.modal', function() {
+                $('#deskripsiForm')[0].reset();
+                clearDeskripsiErrors();
             });
 
         });
