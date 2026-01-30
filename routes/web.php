@@ -1,7 +1,12 @@
 <?php
 
 use App\Http\Controllers\CMS\AuthController;
+use App\Http\Controllers\CMS\DeskripsiprodukController;
+use App\Http\Controllers\CMS\KategoriController;
+use App\Http\Controllers\CMS\ProdukController;
+use App\Http\Controllers\CMS\TokoController;
 use App\Http\Controllers\CMS\UserController;
+use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -10,12 +15,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('pages.home');
 });
-Route::get('/produk', function () {
-    return view('pages.produk');
-});
-Route::get('/detail-produk', function () {
-    return view('pages.detail-produk');
-});
+Route::get('/produk', [App\Http\Controllers\CMS\ProdukController::class, 'index'])->name('produk.index');
+Route::get('/produk/filter', [App\Http\Controllers\CMS\ProdukController::class, 'filter'])->name('produk.filter');
+Route::get('/detail-produk/{id}', [App\Http\Controllers\CMS\ProdukController::class, 'show'])->name('produk.show');
 Route::get('/keranjang', function () {
     return view('pages.keranjang');
 });
@@ -23,9 +25,23 @@ Route::get('/pembayaran', function () {
     return view('pages.pembayaran');
 });
 Route::get('/detail-toko', function () {
-    return view('pages.profile-toko');
+    $toko = App\Models\TokoModel::first();
+    return redirect('/detail-toko/' . $toko->id);
+});
+Route::get('/detail-toko/{id}', [PageController::class, 'detailToko']);
+
+//admin web
+Route::get('/toko', function () {
+    return view('admin.toko');
 });
 
+Route::get('/kategori', function () {
+    return view('admin.kategori');
+});
+
+Route::get('/produk-admin', function () {
+    return view('admin.produk');
+});
 
 // route auth
 Route::get('/login', function () {
@@ -67,6 +83,39 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::prefix('user')->controller(UserController::class)->group(function () {
             Route::get('/', 'getAllData');
             Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+
+        Route::prefix('toko')->controller(TokoController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+
+        Route::prefix('kategori')->controller(KategoriController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+
+        Route::prefix('produk-admin')->controller(ProdukController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+
+        Route::prefix('deskripsi-produk')->controller(DeskripsiprodukController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::get('/get-by-produk/{produkId}', 'getByProdukId');
             Route::post('/update/{id}', 'updateData');
             Route::delete('/delete/{id}', 'deleteData');
         });
