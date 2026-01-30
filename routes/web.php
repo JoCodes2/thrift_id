@@ -46,11 +46,11 @@ Route::get('/produk-admin', function () {
 // route auth
 Route::get('/login', function () {
     return view('auth.login');
-})->middleware('guest');
+})->middleware('guest')->name('login');
 Route::get('/register', function () {
     return view('auth.register');
 });
-Route::post('thrif-id/login', [AuthController::class, 'login'])->name('login');
+Route::post('thrif-id/login', [AuthController::class, 'login']);
 
 Route::prefix('thrif-id/user')->controller(UserController::class)->group(function () {
     Route::post('/create', 'createData');

@@ -13,16 +13,6 @@
                 <p class="text-gray-500 max-w-md italic">Barang pilihan berkualitas dari berbagai penjual terpercaya di
                     seluruh Indonesia.</p>
             </div>
-            <div class="flex items-center gap-3">
-                <span class="text-xs font-bold text-gray-400 uppercase">Urutkan:</span>
-                <select
-                    class="px-4 py-2.5 bg-white border border-gray-100 rounded-xl text-sm font-bold text-gray-700 shadow-sm focus:ring-2 focus:ring-green-700 outline-none">
-                    <option>Terbaru</option>
-                    <option>Harga Terendah</option>
-                    <option>Harga Tertinggi</option>
-                    <option>Terlaris</option>
-                </select>
-            </div>
         </div>
 
         <div class="flex flex-col lg:flex-row gap-10">
@@ -30,7 +20,6 @@
                 <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-50 sticky top-24">
                     <div class="flex items-center justify-between mb-8">
                         <h3 class="font-bold text-xl text-gray-900">Filter</h3>
-                        <button class="text-xs font-bold text-green-700 hover:text-green-800 uppercase">Reset</button>
                     </div>
 
                     <div class="mb-8">
@@ -54,16 +43,6 @@
                             @endforelse
                         </div>
                     </div>
-
-                    <div class="mb-8">
-                        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Ketersediaan</h4>
-                        <div class="flex flex-wrap gap-2">
-                            <button
-                                class="px-4 py-2 rounded-full border border-gray-100 text-xs font-bold bg-green-50 text-green-700">Tersedia</button>
-                            <button
-                                class="px-4 py-2 rounded-full border border-gray-100 text-xs font-bold text-gray-500 hover:bg-gray-50">Habis</button>
-                        </div>
-                    </div>
                 </div>
             </aside>
 
@@ -83,11 +62,6 @@
                                         {{ ucfirst($item->status_stok) }}
                                     </span>
                                 </div>
-
-                                <button
-                                    class="absolute top-4 right-4 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-white transition-all shadow-sm">
-                                    <i class="fa-regular fa-heart text-lg"></i>
-                                </button>
                             </div>
 
                             <div class="p-6">
@@ -134,19 +108,6 @@
                         </div>
                     @endforelse
                 </div>
-        </div>
-
-        <div class="mt-20 flex justify-center">
-            <nav class="flex items-center space-x-2 bg-white p-2 rounded-2xl shadow-sm border border-gray-50">
-                <button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-stone-50 text-gray-400"><i
-                        class="fa-solid fa-chevron-left"></i></button>
-                <button
-                    class="w-10 h-10 flex items-center justify-center rounded-xl bg-green-700 text-white font-bold shadow-lg shadow-green-100">1</button>
-                <button
-                    class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-stone-50 text-gray-600 font-bold">2</button>
-                <button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-stone-50 text-gray-400"><i
-                        class="fa-solid fa-chevron-right"></i></button>
-            </nav>
         </div>
         </main>
     </div>
