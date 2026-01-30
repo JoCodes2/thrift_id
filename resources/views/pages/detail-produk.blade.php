@@ -103,7 +103,7 @@
                             </div>
                         </div>
 
-                        <a href="{{ url('/detail-toko') }}"
+                        <a href="{{ url('/detail-toko/' . $produk->toko->id) }}"
                             class="text-[10px] font-black text-green-700 hover:text-white hover:bg-green-700 uppercase px-6 py-3 bg-white border border-green-100 rounded-xl transition-all shadow-sm shadow-green-100">
                             Kunjungi Toko
                         </a>

@@ -6,6 +6,7 @@ use App\Http\Controllers\CMS\KategoriController;
 use App\Http\Controllers\CMS\ProdukController;
 use App\Http\Controllers\CMS\TokoController;
 use App\Http\Controllers\CMS\UserController;
+use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -24,8 +25,10 @@ Route::get('/pembayaran', function () {
     return view('pages.pembayaran');
 });
 Route::get('/detail-toko', function () {
-    return view('pages.profile-toko');
+    $toko = App\Models\TokoModel::first();
+    return redirect('/detail-toko/' . $toko->id);
 });
+Route::get('/detail-toko/{id}', [PageController::class, 'detailToko']);
 
 //admin web
 Route::get('/toko', function () {
