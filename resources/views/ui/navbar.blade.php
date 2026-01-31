@@ -30,7 +30,7 @@
                     @if(Auth::user()->role === 'pembeli')
                     <a href="{{ url('/keranjang') }}" class="text-gray-500 hover:text-green-700 relative p-2 transition-colors">
                         <i class="fa-solid fa-bag-shopping text-xl"></i>
-                        <span class="absolute top-0 right-0 bg-red-500 text-white text-[10px] rounded-full px-1.5 font-bold border-2 border-white">0</span>
+                        <span id="cart-badge" class="absolute top-0 right-0 bg-red-500 text-white text-[10px] rounded-full px-1.5 font-bold border-2 border-white">0</span>
                     </a>
 
                     <div class="h-8 w-px bg-gray-200 mx-2 hidden md:block"></div>

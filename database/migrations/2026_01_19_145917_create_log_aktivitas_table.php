@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('log_aktivitas', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('id_pembeli')->constrained('users')->onDelete('cascade');
+            $table->foreignUuid('id_pembeli')->nullable()->constrained('users')->onDelete('cascade');
+            $table->string('guest_session_id')->nullable()->index();
             $table->foreignUuid('id_produk')->constrained('produk')->onDelete('cascade');
             $table->enum('jenis_aktivitas', ['lihat', 'tambah_keranjang', 'transaksi']);
             $table->integer('skor_minat');

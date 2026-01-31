@@ -89,8 +89,8 @@
                             </div>
                             <div class="flex flex-col gap-2">
                                 <div class="grid grid-cols-5 gap-2">
-                                    <button
-                                        class="col-span-1 bg-stone-100 hover:bg-green-100 text-gray-600 hover:text-green-700 h-12 rounded-2xl transition-all flex items-center justify-center">
+                                    <button data-id="{{ $item->id }}"
+                                        class="btn-add-cart col-span-1 bg-stone-100 hover:bg-green-100 text-gray-600 hover:text-green-700 h-12 rounded-2xl transition-all flex items-center justify-center">
                                         <i class="fa-solid fa-cart-plus"></i>
                                     </button>
 
@@ -115,6 +115,7 @@
 @endsection
 
 @section('scripts')
+    <script type="module" src="{{ asset('js/controllers/keranjang.controller.js') }}"></script>
     <script>
         $(document).ready(function() {
             // Function to load products
@@ -182,7 +183,7 @@
                         </div>
                         <div class="flex flex-col gap-2">
                             <div class="grid grid-cols-5 gap-2">
-                                <button class="col-span-1 bg-stone-100 hover:bg-green-100 text-gray-600 hover:text-green-700 h-12 rounded-2xl transition-all flex items-center justify-center">
+                                <button data-id="${item.id}" class="btn-add-cart col-span-1 bg-stone-100 hover:bg-green-100 text-gray-600 hover:text-green-700 h-12 rounded-2xl transition-all flex items-center justify-center">
                                     <i class="fa-solid fa-cart-plus"></i>
                                 </button>
 

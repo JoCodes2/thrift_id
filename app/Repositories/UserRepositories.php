@@ -62,7 +62,6 @@ class UserRepositories implements UserInterfaces
             $data->email = $request->input('email');
             $data->no_hp = $request->input('no_hp');
 
-            // Logika Update Password: Hanya update jika password diisi
             if ($request->filled('password')) {
                 $data->password = Hash::make($request->input('password'));
             }
