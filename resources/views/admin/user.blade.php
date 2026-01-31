@@ -19,14 +19,16 @@
                             <th>No</th>
                             <th>Nama</th>
                             <th>Email</th>
+                            <th>No HP</th>
                             <th>Sandi</th>
                             <th>Hak Akses</th>
+                            <th>Alamat</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tBody">
                         <tr>
-                            <td colspan="6" class="text-center">Memuat data...</td>
+                            <td colspan="8" class="text-center">Memuat data...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -64,15 +66,22 @@
                             <div class="invalid-feedback" id="email-error"></div>
                         </div>
 
+                        <div class="form-group mb-3">
+                            <label for="no_hp">No HP</label>
+                            <input type="text" class="form-control" name="no_hp" id="no_hp"
+                                placeholder="Masukkan no hp">
+                            <div class="invalid-feedback" id="no_hp-error"></div>
+                        </div>
+
                         {{-- Password --}}
                         <div class="form-group mb-3">
                             <label for="password">Password</label>
                             <input type="password" class="form-control" name="password" id="password"
                                 placeholder="Masukkan password">
                             <div class="invalid-feedback" id="password-error"></div>
-                            {{-- <small class="text-muted">
+                            <small class="text-muted">
                                 Kosongkan jika tidak ingin mengubah password
-                            </small> --}}
+                            </small>
                         </div>
 
                         {{-- Role --}}
@@ -81,10 +90,17 @@
                             <select name="role" id="role" class="form-control">
                                 <option value="">-- Pilih Role --</option>
                                 <option value="super-admin">Super Admin</option>
-                                <option value="admin">Admin</option>
-                                <option value="mahasiswa">Mahasiswa</option>
+                                <option value="penjual">Penjual</option>
+                                <option value="pembeli">Pembeli</option>
                             </select>
                             <div class="invalid-feedback" id="role-error"></div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="alamat">Alamat</label>
+                            <input type="text" class="form-control" name="alamat" id="alamat"
+                                placeholder="Masukkan alamat">
+                            <div class="invalid-feedback" id="alamat-error"></div>
                         </div>
 
                     </form>
@@ -106,7 +122,7 @@
             // Ambil data user
             function getData() {
                 $.ajax({
-                    url: "/sitasi/user",
+                    url: "/thrif-id/user",
                     method: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -117,8 +133,10 @@
                                 <td>${index + 1}</td>
                                 <td>${item.nama}</td>
                                 <td>${item.email}</td>
+                                <td>${item.no_hp}</td>
                                 <td>****</td>
                                 <td>${item.role}</td>
+                                <td>${item.alamat}</td>
                                 <td>
                                     <button type="button"
                                         class="btn btn-outline-primary btn-sm edit-btn"
@@ -154,25 +172,21 @@
             getData();
 
             // create & update
-            $(document).on('click', '#simpanData', function(e) {
-                e.preventDefault();
-                clearErrors();
-
-                let id = $('#id').val();
-                let formData = new FormData($('#userForm')[0]);
-                let url = id ? `/sitasi/user/update/${id}` : '/sitasi/user/create';
-
-                loadingAllert();
+            $(document).on('click', '#simpanData', function() {
+                const formData = new FormData($('#userForm')[0]);
+                const id = $('#id').val();
+                const url = id ? `/thrif-id/user/update/${id}` : '/thrif-id/user/create';
+                const method = id ? 'POST' : 'POST';
 
                 $.ajax({
-                    type: 'POST',
                     url: url,
+                    method: method,
                     data: formData,
-                    contentType: false,
                     processData: false,
-
+                    contentType: false,
                     success: function(response) {
                         Swal.close();
+                        console.log(response);
 
                         // ✅ SUCCESS SAJA
                         if (response.code === 200 || response.status === 'success') {
@@ -186,25 +200,16 @@
                     },
 
                     error: function(xhr) {
-                        Swal.close();
-
-                        // ✅ VALIDASI FORM (INI INTINYA)
                         if (xhr.status === 422) {
-                            let errors = xhr.responseJSON.data; // 🔥 PENTING
-
-                            $.each(errors, function(key, value) {
-                                let input = $('#' + key);
-                                let errorEl = $('#' + key + '-error');
-
-                                input.addClass('is-invalid');
-                                errorEl.text(value[0]);
+                            const errors = xhr.responseJSON.errors;
+                            clearErrors();
+                            $.each(errors, function(field, messages) {
+                                $(`#${field}`).addClass('is-invalid');
+                                $(`#${field}-error`).text(messages[0]);
                             });
-
-                            return;
+                        } else {
+                            toastr.error('Terjadi kesalahan saat menyimpan data.');
                         }
-
-                        console.error(xhr.responseText);
-                        errorAlert();
                     }
                 });
             });
@@ -212,7 +217,7 @@
             $(document).on('click', '.edit-btn', function() {
                 let id = $(this).data('id');
                 $.ajax({
-                    url: `/sitasi/user/get/${id}`,
+                    url: `/thrif-id/user/get/${id}`,
                     method: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -224,8 +229,10 @@
                         $('#id').val(data.id);
                         $('#nama').val(data.nama);
                         $('#email').val(data.email);
+                        $('#no_hp').val(data.no_hp);
                         $('#password').val(''); // Kosongkan password untuk edit
                         $('#role').val(data.role);
+                        $('#alamat').val(data.alamat);
                     },
                     error: function(xhr, status, error) {
                         console.error('Error fetching data for edit:', error);
@@ -241,7 +248,7 @@
                 function deleteData() {
                     $.ajax({
                         type: 'DELETE',
-                        url: `/sitasi/user/delete/${id}`,
+                        url: `/thrif-id/user/delete/${id}`,
                         dataType: 'json',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

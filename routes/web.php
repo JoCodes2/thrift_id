@@ -36,6 +36,10 @@ Route::get('/toko', function () {
     return view('admin.toko');
 });
 
+Route::get('/user', function () {
+    return view('admin.user');
+});
+
 Route::get('/kategori', function () {
     return view('admin.kategori');
 });
@@ -83,6 +87,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::prefix('thrif-id')->group(function () {
         Route::prefix('user')->controller(UserController::class)->group(function () {
             Route::get('/', 'getAllData');
+            // Route::post('/create', 'createData');
             Route::get('/get/{id}', 'getDataById');
             Route::post('/update/{id}', 'updateData');
             Route::delete('/delete/{id}', 'deleteData');

@@ -427,33 +427,38 @@
             // Delete data
             $(document).on('click', '.delete-confirm', function() {
                 let id = $(this).data('id');
-                Swal.fire({
-                    title: 'Apakah Anda yakin?',
-                    text: "Data yang dihapus tidak dapat dikembalikan!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Ya, Hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: `/thrif-id/produk-admin/delete/${id}`,
-                            method: 'DELETE',
-                            dataType: 'json',
-                            success: function(response) {
-                                if (response.code === 200) {
-                                    successAlert('Data berhasil dihapus!');
-                                    getData();
-                                }
-                            },
-                            error: function() {
-                                errorAlert('Gagal menghapus data');
+
+                function deleteData() {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: `/thrif-id/produk-admin/delete/${id}`,
+                        dataType: 'json',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            console.log(response);
+
+                            if (response.code === 200 || response.status === "success") {
+                                successAlert('Data berhasil dihapus!');
+
+                                // 🔥 AUTO RELOAD BROWSER
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1000);
+
+                            } else {
+                                errorAlert();
                             }
-                        });
-                    }
-                });
+                        },
+                        error: function(xhr) {
+                            console.error('Error:', xhr.responseText);
+                            errorAlert();
+                        }
+                    });
+                }
+
+                confirmAlert('Apakah Anda yakin ingin menghapus data?', deleteData);
             });
 
             // Reset saat modal ditutup
