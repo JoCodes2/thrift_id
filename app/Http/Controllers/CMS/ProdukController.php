@@ -4,10 +4,14 @@ namespace App\Http\Controllers\CMS;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProdukRequest;
+use App\Models\LogAktivitasModel;
 use App\Repositories\KategoriRepositories;
 use App\Repositories\ProdukRepositories;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class ProdukController extends Controller
 {
@@ -38,10 +42,57 @@ class ProdukController extends Controller
     public function show($id)
     {
         $produk = $this->ProdukRepo->getDataByIdForWeb($id);
+
         if (!$produk) {
             abort(404);
         }
+
+        $this->simpanLogAktivitas($id);
+
         return view('pages.detail-produk', compact('produk'));
+    }
+
+    private function simpanLogAktivitas($idProduk)
+    {
+        try {
+            $userId = Auth::id();
+            $sessionId = session()->getId();
+            $identifier = $userId ?? $sessionId;
+
+            $cacheKey = 'view_log_cooldown_' . $idProduk . '_' . $identifier;
+
+            if (Cache::has($cacheKey)) {
+                return;
+            }
+
+            $log = LogAktivitasModel::where('id_produk', $idProduk)
+                ->where(function ($query) use ($userId, $sessionId) {
+                    if ($userId) {
+                        $query->where('id_pembeli', $userId);
+                    } else {
+                        $query->where('guest_session_id', $sessionId);
+                    }
+                })
+                ->where('jenis_aktivitas', 'lihat_detail')
+                ->first();
+
+            if ($log) {
+                $log->increment('frekuensi');
+            } else {
+                LogAktivitasModel::create([
+                    'id_pembeli'       => $userId,
+                    'guest_session_id' => $userId ? null : $sessionId,
+                    'id_produk'        => $idProduk,
+                    'jenis_aktivitas'  => 'lihat_detail',
+                    'skor_minat'       => 1,
+                    'frekuensi'        => 1
+                ]);
+            }
+
+            Cache::put($cacheKey, true, now()->addMinutes(30));
+        } catch (\Exception $e) {
+            Log::error("Gagal simpan log detail: " . $e->getMessage());
+        }
     }
 
     public function getAllData()

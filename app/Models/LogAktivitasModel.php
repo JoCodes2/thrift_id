@@ -15,6 +15,7 @@ class LogAktivitasModel extends Model
     protected $fillable = [
         'id',
         'id_pembeli',
+        'guest_session_id',
         'id_produk',
         'jenis_aktivitas',
         'skor_minat',
