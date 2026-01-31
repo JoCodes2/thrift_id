@@ -24,13 +24,29 @@ class KeranjangRepositories implements KeranjangInterfaces
     {
         $userId = Auth::id();
 
-        $isiKeranjang = $this->keranjangModel::with('produk')->where('id_pembeli', $userId)->get();
+        $isiKeranjang = $this->keranjangModel::with([
+            'produk.toko',
+            'produk.deskrisp',
+            'produk.kategori'
+        ])
+            ->where('id_pembeli', $userId)
+            ->get();
 
-        $rekomendasi = RekomedasiPenggunaModel::with('produk')
+        $rekomendasi = RekomedasiPenggunaModel::with([
+            'produk.toko',
+            'produk.deskrisp'
+        ])
             ->where('id_pembeli', $userId)
             ->orderBy('prediksi_skor', 'desc')
             ->take(4)
             ->get();
+
+        if ($isiKeranjang->isEmpty()) {
+            return $this->success([
+                'data' => [],
+                'rekomendasi' => $rekomendasi
+            ], "Keranjang kosong");
+        }
 
         return $this->success([
             'data' => $isiKeranjang,
@@ -42,11 +58,28 @@ class KeranjangRepositories implements KeranjangInterfaces
         try {
             $userId = Auth::id();
             $idProduk = $request->id_produk;
+            $qtyInput = $request->qty ?? 1;
 
-            $keranjang = $this->keranjangModel::updateOrCreate(
-                ['id_pembeli' => $userId, 'id_produk' => $idProduk],
-                ['qty' => $request->qty ?? 1, 'added_at' => now()]
-            );
+            $cekKeranjang = $this->keranjangModel::where('id_pembeli', $userId)
+                ->where('id_produk', $idProduk)
+                ->first();
+
+            if ($cekKeranjang) {
+
+                if ($request->has('update_mode')) {
+                    $cekKeranjang->update(['qty' => $qtyInput]);
+                } else {
+                    $cekKeranjang->increment('qty', $qtyInput);
+                }
+                $keranjang = $cekKeranjang;
+            } else {
+                $keranjang = $this->keranjangModel::create([
+                    'id_pembeli' => $userId,
+                    'id_produk'  => $idProduk,
+                    'qty'        => $qtyInput,
+                    'added_at'   => now()
+                ]);
+            }
 
             $log = $this->logModel::where('id_pembeli', $userId)
                 ->where('id_produk', $idProduk)
@@ -64,7 +97,26 @@ class KeranjangRepositories implements KeranjangInterfaces
                     'frekuensi'  => 1
                 ]);
             }
+
             return $this->success($keranjang);
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage(), 400, $th, class_basename($this), __FUNCTION__);
+        }
+    }
+    public function hapusKeranjang($id)
+    {
+        try {
+            $userId = Auth::id();
+            $item = $this->keranjangModel::where('id', $id)
+                ->where('id_pembeli', $userId)
+                ->first();
+
+            if (!$item) {
+                return $this->error("Produk tidak ditemukan di keranjang", 404);
+            }
+
+            $item->delete();
+            return $this->delete();
         } catch (\Throwable $th) {
             return $this->error($th->getMessage(), 400, $th, class_basename($this), __FUNCTION__);
         }

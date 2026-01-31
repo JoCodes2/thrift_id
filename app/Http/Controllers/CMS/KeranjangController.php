@@ -20,6 +20,10 @@ class KeranjangController extends Controller
     }
     public function tambahKeranjang(Request $request)
     {
-        return $this->tambahKeranjang($request);
+        return $this->keranjang->tambahKeranjang($request);
+    }
+    public function hapusKeranjang($id)
+    {
+        return $this->keranjang->hapusKeranjang($id);
     }
 }

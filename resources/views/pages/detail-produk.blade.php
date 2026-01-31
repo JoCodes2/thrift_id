@@ -110,12 +110,7 @@
                     </div>
 
                     <div class="space-y-4">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <button
-                                class="py-4 bg-stone-100 text-gray-700 font-bold rounded-2xl hover:bg-stone-200 transition-all flex items-center justify-center space-x-3 group">
-                                <i class="fa-solid fa-cart-plus text-lg group-hover:scale-110 transition-transform"></i>
-                                <span>Keranjang</span>
-                            </button>
+                        <div class=" gap-4">
                             <a href="{{ url('/pembayaran') }}"
                                 class="py-4 bg-green-700 text-white font-bold rounded-2xl shadow-xl shadow-green-100 hover:bg-green-800 transition-all transform active:scale-95 text-center block">
                                 Beli Sekarang

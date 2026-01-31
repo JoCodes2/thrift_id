@@ -23,6 +23,16 @@
         }
     </style>
     <style>
+            @keyframes pop {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.4); }
+        100% { transform: scale(1); }
+    }
+    .cart-pop {
+        animation: pop 0.3s ease-in-out;
+    }
+    </style>
+    <style>
         /* CSS Tambahan untuk memastikan scrollbar benar-benar hilang tapi tetap berfungsi */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
@@ -65,6 +75,7 @@
     <script src="{{ asset('helpers/alert-ui.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="{{ asset('helpers/global.js') }}"></script>
     <script>
         $(document).ready(function() {
             // --- MOBILE MENU ---

@@ -3,6 +3,7 @@
 use App\Http\Controllers\CMS\AuthController;
 use App\Http\Controllers\CMS\DeskripsiprodukController;
 use App\Http\Controllers\CMS\KategoriController;
+use App\Http\Controllers\CMS\KeranjangController;
 use App\Http\Controllers\CMS\ProdukController;
 use App\Http\Controllers\CMS\TokoController;
 use App\Http\Controllers\CMS\UserController;
@@ -118,6 +119,11 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/get-by-produk/{produkId}', 'getByProdukId');
             Route::post('/update/{id}', 'updateData');
             Route::delete('/delete/{id}', 'deleteData');
+        });
+        Route::prefix('keranjang')->controller(KeranjangController::class)->group(function () {
+            Route::get('/', 'getKeranjang');
+            Route::post('/create', 'tambahKeranjang');
+            Route::delete('/delete/{id}', 'hapusKeranjang');
         });
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     });
