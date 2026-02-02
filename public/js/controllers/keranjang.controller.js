@@ -90,4 +90,12 @@ $(document).ready(function () {
     });
 
     initKeranjangPage();
+    $(document).on('click', '#btn-checkout', function (e) {
+        e.preventDefault();
+        const btn = $(this);
+        const originalContent = btn.html();
+        btn.prop('disabled', true).html('<i class="fa-solid fa-spinner animate-spin"></i> Menyiapkan Pesanan...');
+
+        window.location.href = `${appUrl}/pembayaran`;
+    });
 });

@@ -111,10 +111,11 @@
 
                     <div class="space-y-4">
                         <div class=" gap-4">
-                            <a href="{{ url('/pembayaran') }}"
-                                class="py-4 bg-green-700 text-white font-bold rounded-2xl shadow-xl shadow-green-100 hover:bg-green-800 transition-all transform active:scale-95 text-center block">
+                            <button id="btn-beli-sekarang"
+                                    data-id="{{ $produk->id }}"
+                                    class="w-full py-4 bg-green-700 text-white font-bold rounded-2xl shadow-xl shadow-green-100 hover:bg-green-800 transition-all transform active:scale-95 text-center block">
                                 Beli Sekarang
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -194,4 +195,16 @@
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script>
+        $(document).on('click', '#btn-beli-sekarang', function(e) {
+            const productId = $(this).data('id');
+            const qty = 1;
+
+            $(this).html('<i class="fa-solid fa-circle-notch animate-spin"></i> Memproses...');
+
+            window.location.href = `${appUrl}/pembayaran?produk_id=${productId}&qty=${qty}`;
+        });
+    </script>
 @endsection
