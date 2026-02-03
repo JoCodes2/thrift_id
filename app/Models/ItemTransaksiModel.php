@@ -16,6 +16,7 @@ class ItemTransaksiModel extends Model
         'id',
         'id_transaksi',
         'id_produk',
+        'status_item',
         'nama_produk',
         'nama_kategori',
         'harga_satuan',

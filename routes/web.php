@@ -66,9 +66,6 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/profile', function () {
         return view('pages.profile-pembeli');
     });
-    Route::get('/riwayat-pesanan', function () {
-        return view('pages.riwayat-pesanan');
-    });
     Route::get('/riwayat-pesanan/menunggu', function () {
         return view('pages.riwayat-pesanan-menunggu');
     });

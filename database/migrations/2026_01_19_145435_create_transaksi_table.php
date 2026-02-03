@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('nomor_transaksi')->unique();
             $table->foreignUuid('id_pembeli')->constrained('users')->onDelete('cascade');
             $table->integer('total_harga');
-            $table->enum('status_transaksi', ['menunggu', 'dibayar', 'dikirim', 'selesai', 'dibatalkan'])->default('menunggu');
             $table->timestamps();
         });
     }

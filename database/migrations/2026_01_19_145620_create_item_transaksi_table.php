@@ -16,11 +16,11 @@ return new class extends Migration
             $table->foreignUuid('id_transaksi')->constrained('transaksi')->onDelete('cascade');
             $table->foreignUuid('id_produk')->constrained('produk');
 
-            // Data Snapshot
+            $table->enum('status_item', ['menunggu', 'dikirim', 'selesai'])->default('menunggu');
+
             $table->string('nama_produk');
             $table->string('nama_kategori');
             $table->integer('harga_satuan');
-
             $table->integer('qty')->default(1);
             $table->integer('subtotal');
             $table->timestamps();

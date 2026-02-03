@@ -111,10 +111,6 @@
                     <p id="invoice-nama-pembeli" class="font-bold text-gray-900 text-sm md:text-base">-</p>
                     <p id="invoice-alamat-pembeli" class="text-[10px] md:text-xs text-gray-500 leading-tight italic">-</p>
                 </div>
-                <div class="sm:text-right">
-                    <p class="text-[9px] font-black text-stone-400 uppercase tracking-widest mb-1 italic text-green-700">Status:</p>
-                    <span class="inline-block px-3 py-1 bg-orange-50 text-orange-600 rounded-lg text-[8px] md:text-[9px] font-black uppercase border border-orange-100">Menunggu Konfirmasi</span>
-                </div>
             </div>
 
             <div class="space-y-4 mb-8">

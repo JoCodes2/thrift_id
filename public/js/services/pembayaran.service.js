@@ -32,6 +32,8 @@ class pembayaranService {
     // Fungsi baru untuk submit transaksi
     async buatTransaksi(payload) {
         const response = await this.ajaxRequest(`${appUrl}/thrif-id/transaksi/create`, 'POST', payload);
+        console.log(response);
+
         return response;
     }
 

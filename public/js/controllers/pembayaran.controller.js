@@ -1,4 +1,5 @@
 import pembayaranService from "../services/pembayaran.service.js";
+
 $(document).ready(async function () {
     const service = new pembayaranService();
     const urlParams = new URLSearchParams(window.location.search);
@@ -62,12 +63,11 @@ $(document).ready(async function () {
                 btn.prop('disabled', true);
 
                 const response = await service.buatTransaksi(payload);
-                console.log(response);
 
                 if (response.code === 200) {
                     await successAlert('Transaksi berhasil disimpan!');
-
-                    renderModalInvoice(response.data, currentItems);
+                    // Pastikan backend sudah melakukan ->load(['items.produk.toko'])
+                    renderModalInvoice(response.data);
                 }
             } catch (error) {
                 console.error(error);
@@ -77,52 +77,66 @@ $(document).ready(async function () {
         });
     });
 
-    function renderModalInvoice(transaksi, items) {
-        const trxNo = transaksi.nomor_transaksi || transaksi.id.substring(0, 8).toUpperCase();
+    function renderModalInvoice(transaksi) {
+        if (!transaksi || !transaksi.items) return;
+
+        const trxNo = transaksi.nomor_transaksi;
+        const items = transaksi.items;
 
         $('#invoice-trx-id').text(`ID: #${trxNo}`);
         $('#invoice-nama-pembeli').text(currentUser?.nama || 'Pembeli');
         $('#invoice-alamat-pembeli').text(currentUser?.alamat || 'Alamat tidak tersedia');
         $('#invoice-total-tagihan').text(`Rp ${new Intl.NumberFormat('id-ID').format(transaksi.total_harga)}`);
 
+        // Sembunyikan container status transaksi global jika ada di HTML
+        $('#invoice-status-container').addClass('hidden');
+
         let itemsHtml = '';
         items.forEach(item => {
             itemsHtml += `
-        <div class="bg-stone-50 rounded-2xl p-4 flex justify-between items-center border border-stone-100">
-            <div>
-                <p class="font-bold text-gray-900 text-xs md:text-sm italic">${item.produk.nama_produk}</p>
-                <p class="text-[9px] text-stone-500 uppercase font-black">${item.produk.toko.nama_toko} • ${item.qty} Unit</p>
-            </div>
-            <p class="font-black text-gray-900 text-xs md:text-sm tracking-tight">
-                Rp ${new Intl.NumberFormat('id-ID').format(item.produk.harga * item.qty)}
-            </p>
-        </div>`;
+            <div class="bg-stone-50 rounded-2xl p-4 border border-stone-100 mb-3 shadow-sm">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex-1 pr-4">
+                        <p class="font-bold text-gray-900 text-xs md:text-sm italic leading-tight">${item.nama_produk}</p>
+                        <p class="text-[9px] text-stone-400 font-bold uppercase mt-1">
+                            ${item.produk?.toko?.nama_toko || 'Toko'} • ${item.qty} Unit
+                        </p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-black text-gray-900 text-xs md:text-sm italic">
+                            Rp ${new Intl.NumberFormat('id-ID').format(item.subtotal)}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 pt-2 border-t border-stone-200/60">
+                    <span class="text-[8px] font-black px-2 py-0.5 rounded bg-orange-50 text-orange-600 border border-orange-100 uppercase tracking-tighter italic">
+                        <i class="fa-solid fa-clock mr-1"></i>${item.status_item}
+                    </span>
+                </div>
+            </div>`;
         });
         $('#invoice-items-list').html(itemsHtml);
 
         const groupedByToko = items.reduce((acc, item) => {
-            const toko = item.produk.toko;
-            if (!acc[toko.id]) {
-                acc[toko.id] = {
-                    nama: toko.nama_toko,
-                    wa: toko.no_hp_toko,
-                    barang: []
-                };
+            const toko = item.produk?.toko;
+            if (toko) {
+                if (!acc[toko.id]) {
+                    acc[toko.id] = {
+                        nama: toko.nama_toko,
+                        wa: toko.no_hp_toko,
+                        barang: []
+                    };
+                }
+                acc[toko.id].barang.push(item.nama_produk);
             }
-            acc[toko.id].barang.push(item.produk.nama_produk);
             return acc;
         }, {});
 
         let waButtonsHtml = '';
         Object.values(groupedByToko).forEach((toko, index) => {
-            let rawNumber = toko.wa.replace(/\D/g, '');
-
-            if (rawNumber.startsWith('0')) {
-                rawNumber = '62' + rawNumber.substring(1);
-            }
-            else if (rawNumber.startsWith('8')) {
-                rawNumber = '62' + rawNumber;
-            }
+            let rawNumber = (toko.wa || "").replace(/\D/g, '');
+            if (rawNumber.startsWith('0')) rawNumber = '62' + rawNumber.substring(1);
+            else if (rawNumber.startsWith('8')) rawNumber = '62' + rawNumber;
 
             const pesan = encodeURIComponent(
                 `Halo ${toko.nama}, saya ingin konfirmasi pesanan #${trxNo}.\n\n` +
@@ -131,22 +145,25 @@ $(document).ready(async function () {
             );
 
             waButtonsHtml += `
-        <a href="https://api.whatsapp.com/send?phone=${rawNumber}&text=${pesan}" target="_blank"
-           class="flex items-center justify-between px-6 py-4 bg-white border-2 border-green-700/10 hover:border-green-700 rounded-2xl transition-all group shadow-sm">
-            <div class="flex items-center gap-4">
-                <i class="fa-brands fa-whatsapp text-2xl text-green-600"></i>
-                <div class="text-left leading-tight">
-                    <p class="text-[9px] font-black text-green-700 uppercase tracking-tighter mb-0.5">Chat Admin Toko ${index + 1}</p>
-                    <p class="font-bold text-gray-900 text-sm italic">${toko.nama}</p>
+            <a href="https://api.whatsapp.com/send?phone=${rawNumber}&text=${pesan}" target="_blank"
+               class="flex items-center justify-between px-6 py-4 bg-white border-2 border-green-700/10 hover:border-green-700 rounded-2xl transition-all group shadow-sm mb-3">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition-all">
+                        <i class="fa-brands fa-whatsapp text-xl"></i>
+                    </div>
+                    <div class="text-left leading-tight">
+                        <p class="text-[9px] font-black text-green-700 uppercase tracking-tighter mb-0.5">Konfirmasi Toko ${index + 1}</p>
+                        <p class="font-bold text-gray-900 text-sm italic">${toko.nama}</p>
+                    </div>
                 </div>
-            </div>
-            <i class="fa-solid fa-chevron-right text-stone-300 group-hover:text-green-700 group-hover:translate-x-1 transition-all"></i>
-        </a>`;
+                <i class="fa-solid fa-chevron-right text-stone-300 group-hover:text-green-700 group-hover:translate-x-1 transition-all"></i>
+            </a>`;
         });
         $('#invoice-wa-buttons').html(waButtonsHtml);
 
         $('#modalInvoice').removeClass('hidden').addClass('flex');
     }
+
     $(document).on('click', '#btnCloseModal', function () {
         $('#modalInvoice').addClass('hidden').removeClass('flex');
         window.location.href = `${appUrl}/riwayat-pesanan/menunggu`;
