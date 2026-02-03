@@ -39,16 +39,20 @@
                         <h1 class="text-4xl font-playfair font-bold text-gray-900 leading-tight">{{ $produk->nama_produk }}
                         </h1>
 
-                        <div class="flex items-center mt-4 space-x-4">
+                       <div class="flex items-center mt-4 space-x-4">
                             <div class="flex items-center text-orange-400 font-bold">
                                 <i class="fa-solid fa-star mr-1"></i>
-                                <span class="text-gray-900 text-sm">4.8 <span class="text-gray-400 font-medium ml-1">(24
-                                        Ulasan)</span></span>
+                                <span class="text-gray-900 text-sm">
+                                    {{ $produk->rating_rata_rata ? number_format($produk->rating_rata_rata, 1) : '0' }}
+                                    <span class="text-gray-400 font-medium ml-1">
+                                        ({{ $produk->total_ulasan ?? 0 }} Ulasan)
+                                    </span>
+                                </span>
                             </div>
                             <span class="text-gray-200">|</span>
-                            <span class="text-sm text-gray-500 font-bold uppercase tracking-tighter">Terjual
-                                {{ $produk->jumlah_terjual }}
-                                Produk</span>
+                            <span class="text-sm text-gray-500 font-bold uppercase tracking-tighter">
+                                Terjual {{ $produk->jumlah_terjual }} Produk
+                            </span>
                         </div>
                     </div>
 
@@ -169,27 +173,39 @@
                         Ulasan
                     </h3>
                     <div class="space-y-6">
-                        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-                            <div class="flex items-center mb-4">
-                                <div class="flex text-orange-400 text-[10px] space-x-0.5">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
+                        @forelse ($produk->review as $ulasan)
+                            <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+                                <div class="flex items-center mb-4">
+                                    <div class="flex text-orange-400 text-[10px] space-x-0.5">
+                                        {{-- Menampilkan Bintang secara Dinamis --}}
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            <i class="fa-{{ $i <= $ulasan->nilai_rating ? 'solid' : 'regular' }} fa-star"></i>
+                                        @endfor
+                                    </div>
+                                    <span class="ml-auto text-[10px] font-bold text-gray-400 italic">
+                                        {{ $ulasan->created_at->format('d M Y') }}
+                                    </span>
                                 </div>
-                                <span class="ml-auto text-[10px] font-bold text-gray-400 italic">12 Jan 2026</span>
+
+                                <p class="text-sm text-gray-600 font-medium leading-relaxed mb-4">
+                                    "{{ $ulasan->ulasan ?? 'Tidak ada komentar.' }}"
+                                </p>
+
+                                <div class="flex items-center pt-4 border-t border-gray-50">
+                                    <div class="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center text-[10px] text-green-700 font-black border border-green-100 uppercase">
+                                        {{ substr($ulasan->pembeli->nama ?? 'U', 0, 2) }}
+                                    </div>
+                                    <span class="ml-3 text-[10px] font-bold text-gray-900 uppercase tracking-widest">
+                                        {{ $ulasan->pembeli->nama ?? 'Anonim' }}
+                                    </span>
+                                </div>
                             </div>
-                            <p class="text-sm text-gray-600 font-medium leading-relaxed mb-4">"Barangnya mantap banget,
-                                sesuai foto. Pengiriman juga cepet!"</p>
-                            <div class="flex items-center pt-4 border-t border-gray-50">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center text-[10px] text-green-700 font-black border border-green-100">
-                                    AB</div>
-                                <span class="ml-3 text-[10px] font-bold text-gray-900 uppercase tracking-widest">Andi
-                                    Budiman</span>
+                        @empty
+                            <div class="text-center py-10">
+                                <i class="fa-solid fa-comment-slash text-stone-200 text-4xl mb-3"></i>
+                                <p class="text-xs text-stone-400 font-bold uppercase tracking-widest">Belum ada ulasan</p>
                             </div>
-                        </div>
+                        @endforelse
                     </div>
                 </div>
             </div>

@@ -35,7 +35,10 @@ class ProdukRepositories implements ProdukInterfaces
 
     public function getAllForWeb()
     {
-        return ProdukModel::with(['kategori', 'toko', 'deskrisp'])->get();
+        return ProdukModel::with(['kategori', 'toko', 'deskrisp'])
+            ->withAvg('review as rating_rata_rata', 'nilai_rating')
+            ->withCount('review as total_ulasan')
+            ->get();
     }
 
     public function getFilteredForWeb($categoryIds = null)
@@ -49,7 +52,15 @@ class ProdukRepositories implements ProdukInterfaces
 
     public function getDataByIdForWeb($id)
     {
-        return ProdukModel::with(['kategori', 'toko', 'deskrisp'])->find($id);
+        return ProdukModel::with([
+            'kategori',
+            'toko',
+            'deskrisp',
+            'review.pembeli'
+        ])
+            ->withAvg('review as rating_rata_rata', 'nilai_rating')
+            ->withCount('review as total_ulasan')
+            ->find($id);
     }
 
     public function createData(ProdukRequest $request)

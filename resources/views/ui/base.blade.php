@@ -69,7 +69,7 @@
 
     <!-- build:js assets/vendor/js/core.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="{{ asset('assets/assets/vendor/libs/jquery/jquery.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js"
         integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ=="
@@ -86,11 +86,9 @@
                 $('#mobile-menu').toggleClass('hidden');
             });
 
-            // --- PROFILE DROPDOWN STABLE HANDLER ---
             const profileContainer = $('#profileDropdownContainer');
             const profileMenu = $('#profileMenu');
 
-            // Hover Effect (Desktop)
             profileContainer.hover(
                 function() {
                     profileMenu.removeClass('hidden');

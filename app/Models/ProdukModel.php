@@ -41,4 +41,8 @@ class ProdukModel extends Model
     {
         return $this->hasMany(DeskripsiprodukModel::class, 'produk_id');
     }
+    public function review(): HasMany
+    {
+        return $this->hasMany(PenilaianModel::class, 'id_produk');
+    }
 }
