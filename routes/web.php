@@ -6,6 +6,7 @@ use App\Http\Controllers\CMS\KategoriController;
 use App\Http\Controllers\CMS\KeranjangController;
 use App\Http\Controllers\CMS\ProdukController;
 use App\Http\Controllers\CMS\TokoController;
+use App\Http\Controllers\CMS\TransaksiControllers;
 use App\Http\Controllers\CMS\UserController;
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
@@ -19,12 +20,7 @@ Route::get('/', function () {
 Route::get('/produk', [App\Http\Controllers\CMS\ProdukController::class, 'index'])->name('produk.index');
 Route::get('/produk/filter', [App\Http\Controllers\CMS\ProdukController::class, 'filter'])->name('produk.filter');
 Route::get('/detail-produk/{id}', [App\Http\Controllers\CMS\ProdukController::class, 'show'])->name('produk.show');
-Route::get('/keranjang', function () {
-    return view('pages.keranjang');
-});
-Route::get('/pembayaran', function () {
-    return view('pages.pembayaran');
-});
+
 Route::get('/detail-toko', function () {
     $toko = App\Models\TokoModel::first();
     return redirect('/detail-toko/' . $toko->id);
@@ -74,9 +70,6 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/profile', function () {
         return view('pages.profile-pembeli');
     });
-    Route::get('/riwayat-pesanan', function () {
-        return view('pages.riwayat-pesanan');
-    });
     Route::get('/riwayat-pesanan/menunggu', function () {
         return view('pages.riwayat-pesanan-menunggu');
     });
@@ -85,6 +78,12 @@ Route::middleware(['auth', 'web'])->group(function () {
     });
     Route::get('/riwayat-pesanan/selesai', function () {
         return view('pages.riwayat-pesanan-selesai');
+    });
+    Route::get('/keranjang', function () {
+        return view('pages.keranjang');
+    });
+    Route::get('/pembayaran', function () {
+        return view('pages.pembayaran');
     });
 
     // route api
@@ -133,6 +132,13 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/', 'getKeranjang');
             Route::post('/create', 'tambahKeranjang');
             Route::delete('/delete/{id}', 'hapusKeranjang');
+        });
+        Route::prefix('transaksi')->controller(TransaksiControllers::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
         });
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     });

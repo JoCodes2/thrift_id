@@ -6,7 +6,7 @@
                 <i class="fa-solid fa-user-gear"></i>
                 <span>Biodata Diri</span>
             </a>
-            <a href="{{ url('/riwayat-pesanan') }}"
+            <a href="{{ url('/riwayat-pesanan/menunggu') }}"
                class="flex items-center space-x-3 p-3 rounded-xl transition-all font-semibold {{ Request::is('riwayat-pesanan*') ? 'bg-green-50 text-green-700' : 'text-gray-600 hover:bg-gray-50' }}">
                 <i class="fa-solid fa-clock-rotate-left"></i>
                 <span>Riwayat Pesanan</span>

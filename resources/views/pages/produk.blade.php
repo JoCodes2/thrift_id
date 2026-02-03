@@ -70,7 +70,7 @@
                                         class="text-[10px] font-bold text-green-700 uppercase tracking-widest">{{ $item->kategori->nama_kategori ?? 'Kategori' }}</span>
                                     <div class="flex items-center text-orange-400 text-xs font-bold">
                                         <i class="fa-solid fa-star mr-1"></i>
-                                        <span class="text-gray-900">4.8</span>
+                                        <span class="text-gray-900">{{ $item->rating_rata_rata ? number_format($item->rating_rata_rata, 1) : '0' }}</span>
                                     </div>
                                 </div>
 

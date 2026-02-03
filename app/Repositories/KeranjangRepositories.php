@@ -23,6 +23,7 @@ class KeranjangRepositories implements KeranjangInterfaces
     public function getKeranjang()
     {
         $userId = Auth::id();
+        $user = Auth::user();
 
         $isiKeranjang = $this->keranjangModel::with([
             'produk.toko',
@@ -43,12 +44,14 @@ class KeranjangRepositories implements KeranjangInterfaces
 
         if ($isiKeranjang->isEmpty()) {
             return $this->success([
+                'user' => $user,
                 'data' => [],
                 'rekomendasi' => $rekomendasi
             ], "Keranjang kosong");
         }
 
         return $this->success([
+            'user' => $user,
             'data' => $isiKeranjang,
             'rekomendasi' => $rekomendasi
         ]);

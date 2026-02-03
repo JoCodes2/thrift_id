@@ -55,43 +55,47 @@ class ProdukController extends Controller
     private function simpanLogAktivitas($idProduk)
     {
         try {
-            $userId = Auth::id();
-            $sessionId = session()->getId();
-            $identifier = $userId ?? $sessionId;
-
-            $cacheKey = 'view_log_cooldown_' . $idProduk . '_' . $identifier;
-
-            if (Cache::has($cacheKey)) {
+            // Cek Login
+            if (!Auth::check()) {
                 return;
             }
 
-            $log = LogAktivitasModel::where('id_produk', $idProduk)
-                ->where(function ($query) use ($userId, $sessionId) {
-                    if ($userId) {
-                        $query->where('id_pembeli', $userId);
-                    } else {
-                        $query->where('guest_session_id', $sessionId);
-                    }
-                })
-                ->where('jenis_aktivitas', 'lihat_detail')
-                ->first();
+            $userId = Auth::id();
+            $sessionKey = 'last_view_time_' . $idProduk;
+            $currentTime = now();
 
-            if ($log) {
-                $log->increment('frekuensi');
-            } else {
-                LogAktivitasModel::create([
-                    'id_pembeli'       => $userId,
-                    'guest_session_id' => $userId ? null : $sessionId,
-                    'id_produk'        => $idProduk,
-                    'jenis_aktivitas'  => 'lihat_detail',
-                    'skor_minat'       => 1,
-                    'frekuensi'        => 1
-                ]);
+            // 1. Cek jeda 60 detik lewat Session
+            if (session()->has($sessionKey)) {
+                $lastViewTime = session()->get($sessionKey);
+                if ($currentTime->diffInSeconds($lastViewTime) < 60) {
+                    return; // Berhenti jika belum 1 menit
+                }
             }
 
-            Cache::put($cacheKey, true, now()->addMinutes(30));
+            // 2. Gunakan updateOrCreate agar lebih ringkas dan pasti masuk
+            // updateOrCreate akan mencari data, jika ada diupdate, jika tidak ada dibuatkan baru
+            $log = LogAktivitasModel::updateOrCreate(
+                [
+                    'id_pembeli'      => $userId,
+                    'id_produk'       => $idProduk,
+                    'jenis_aktivitas' => 'lihat_detail',
+                ],
+                [
+                    'skor_minat' => 1,
+                    // Kita akan menangani frekuensi secara manual agar tidak konflik
+                ]
+            );
+
+            // Manual increment frekuensi
+            $log->increment('frekuensi');
+
+            // 3. Simpan session dan pastikan session ter-write
+            session()->put($sessionKey, $currentTime);
+            session()->save(); // Paksa simpan session ke storage
+
         } catch (\Exception $e) {
-            Log::error("Gagal simpan log detail: " . $e->getMessage());
+            // Log error ini sangat penting untuk melihat kenapa gagal (cek storage/logs/laravel.log)
+            Log::error("Gagal simpan log aktivitas Produk ID {$idProduk}: " . $e->getMessage());
         }
     }
 
