@@ -47,7 +47,19 @@
                     </div>
 
                     <div class="w-full md:w-auto space-y-3">
-                        <a href="https://wa.me/{{ $toko->no_hp_toko }}"
+                        @php
+                            $raw_phone = preg_replace('/[^0-9]/', '', $toko->no_hp_toko);
+                            if (str_starts_with($raw_phone, '0')) {
+                                $formatted_phone = '62' . substr($raw_phone, 1);
+                            } else {
+                                $formatted_phone = $raw_phone;
+                            }
+
+                            $pesan_wa = urlencode("Halo " . $toko->nama_toko . ", saya melihat profil toko Anda di ThriftVibe dan tertarik dengan beberapa produknya.");
+                        @endphp
+
+                        <a href="https://api.whatsapp.com/send?phone={{ $formatted_phone }}&text={{ $pesan_wa }}"
+                            target="_blank"
                             class="flex items-center justify-center space-x-3 w-full px-6 py-3 bg-stone-900 text-white rounded-2xl font-bold text-sm hover:bg-black transition-all shadow-xl shadow-stone-200">
                             <i class="fa-solid fa-phone-volume text-green-400"></i>
                             <span>Hubungi Toko</span>

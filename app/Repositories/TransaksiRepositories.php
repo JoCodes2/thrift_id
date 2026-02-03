@@ -38,9 +38,10 @@ class TransaksiRepositories implements TransaksiInterfaces
 
         try {
             $userId = Auth::id();
-
+            $nomorTransaksi = 'TRX-' . date('Ymd') . '-' . Str::random(6);
             $transaksi = $this->tansaksiModel->create([
                 'id_pembeli' => $userId,
+                'nomor_transaksi' => $nomorTransaksi,
                 'total_harga' => $request->total_harga,
                 'status_transaksi' => 'menunggu',
                 'created_at' => now(),

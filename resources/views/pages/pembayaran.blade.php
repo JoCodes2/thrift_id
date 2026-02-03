@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="bg-stone-50 min-h-screen pb-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:grid-cols-3 lg:px-8 py-10">
         <div class="mb-10 text-center md:text-left">
             <h1 class="text-3xl font-playfair font-bold text-gray-900">Konfirmasi Pesanan</h1>
             <p class="text-sm text-gray-500 mt-1">Periksa kembali rincian pesanan Anda sebelum membuat invoice.</p>
@@ -79,6 +79,70 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalInvoice" class="fixed inset-0 z-[100] hidden items-center justify-center p-2 sm:p-4">
+    <div class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm"></div>
+
+    <div class="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[95vh] animate-in fade-in zoom-in duration-300">
+        <div class="h-1.5 w-full bg-green-700 flex-shrink-0"></div>
+
+        <button id="btnCloseModal" class="absolute top-4 right-4 z-10 text-stone-300 hover:text-red-500 transition-colors p-2 bg-white/80 backdrop-blur rounded-full">
+            <i class="fa-solid fa-circle-xmark text-2xl md:text-3xl"></i>
+        </button>
+
+        <div class="overflow-y-auto p-6 md:p-12">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 border-b border-stone-100 pb-6 gap-4">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-playfair font-black text-gray-900 italic leading-none">INVOICE</h2>
+                    <p id="invoice-trx-id" class="text-[9px] md:text-[11px] font-black text-green-700 uppercase tracking-[0.2em] mt-2 italic">ID: #TRX-LOADING</p>
+                </div>
+                <div class="sm:text-right">
+                    <p class="text-[9px] font-black text-stone-400 uppercase tracking-widest italic">Tgl. Pemesanan</p>
+                    <p class="text-xs md:text-sm font-bold text-gray-900">{{ date('d M Y') }}</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <p class="text-[9px] font-black text-stone-400 uppercase tracking-widest mb-1 italic text-green-700">Tujuan:</p>
+                    <p id="invoice-nama-pembeli" class="font-bold text-gray-900 text-sm md:text-base">-</p>
+                    <p id="invoice-alamat-pembeli" class="text-[10px] md:text-xs text-gray-500 leading-tight italic">-</p>
+                </div>
+                <div class="sm:text-right">
+                    <p class="text-[9px] font-black text-stone-400 uppercase tracking-widest mb-1 italic text-green-700">Status:</p>
+                    <span class="inline-block px-3 py-1 bg-orange-50 text-orange-600 rounded-lg text-[8px] md:text-[9px] font-black uppercase border border-orange-100">Menunggu Konfirmasi</span>
+                </div>
+            </div>
+
+            <div class="space-y-4 mb-8">
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-2 italic">Daftar Barang Pesanan:</p>
+                <div id="invoice-items-list" class="space-y-3">
+                    </div>
+            </div>
+
+            <div class="pt-6 border-t-2 border-dashed border-stone-100 flex justify-between items-center mb-10">
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-widest italic">Total Tagihan</p>
+                <p id="invoice-total-tagihan" class="text-3xl md:text-4xl font-black text-green-700 tracking-tighter leading-none">Rp 0</p>
+            </div>
+
+            <div class="space-y-3">
+                <p class="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em] text-center mb-4 italic">Pilih Toko untuk Konfirmasi:</p>
+
+                <div id="invoice-wa-buttons" class="space-y-3">
+                    </div>
+
+                <button class="w-full flex items-center justify-center space-x-2 py-4 mt-6 border-2 border-stone-100 rounded-2xl hover:bg-stone-50 transition-all font-bold text-[10px] text-stone-400 uppercase tracking-widest">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>Download Detail Invoice</span>
+                </button>
+            </div>
+
+            <p class="text-center text-[8px] text-stone-400 mt-8 uppercase tracking-widest italic">
+                Invoice generated at: {{ date('H:i:s') }}
+            </p>
         </div>
     </div>
 </div>

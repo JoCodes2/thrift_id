@@ -5,14 +5,20 @@ class pembayaranService {
                 url,
                 method,
                 data,
+                // Tambahkan header CSRF jika diperlukan oleh Laravel
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 processData: data instanceof FormData ? false : true,
-                contentType: data instanceof FormData ? false : 'application/x-www-form-urlencoded',
+                contentType: data instanceof FormData ? false : 'application/json', // Gunakan JSON jika mengirim object
+                data: data instanceof FormData ? data : JSON.stringify(data), // Stringify jika bukan FormData
                 success: (response) => resolve(response),
                 error: (error) => reject(error),
             });
         });
     }
 
+    // URL API tetap di dalam service
     async getKeranjang() {
         const response = await this.ajaxRequest(`${appUrl}/thrif-id/keranjang`, 'GET');
         return response.data;
@@ -21,7 +27,12 @@ class pembayaranService {
     async getProdukDetail(id) {
         const response = await this.ajaxRequest(`${appUrl}/thrif-id/produk-admin/get/${id}`, 'GET');
         return response.data;
+    }
 
+    // Fungsi baru untuk submit transaksi
+    async buatTransaksi(payload) {
+        const response = await this.ajaxRequest(`${appUrl}/thrif-id/transaksi/create`, 'POST', payload);
+        return response;
     }
 
     renderPembayaranHTML(items) {
