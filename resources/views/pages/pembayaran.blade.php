@@ -134,7 +134,7 @@
                 <div id="invoice-wa-buttons" class="space-y-3">
                     </div>
 
-                <button class="w-full flex items-center justify-center space-x-2 py-4 mt-6 border-2 border-stone-100 rounded-2xl hover:bg-stone-50 transition-all font-bold text-[10px] text-stone-400 uppercase tracking-widest">
+                <button id="btnDownloadInvoice" class="w-full flex items-center justify-center space-x-2 py-4 mt-6 border-2 border-stone-100 rounded-2xl hover:bg-stone-50 transition-all font-bold text-[10px] text-stone-400 uppercase tracking-widest">
                     <i class="fa-solid fa-file-pdf"></i>
                     <span>Download Detail Invoice</span>
                 </button>

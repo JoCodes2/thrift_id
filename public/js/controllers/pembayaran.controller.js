@@ -166,6 +166,52 @@ $(document).ready(async function () {
         `;
         $('#container-alamat').html(html);
     }
+    $(document).on('click', '#btnDownloadInvoice', async function () {
+        const { jsPDF } = window.jspdf;
+        const btn = $(this);
+        const invoiceContent = document.querySelector("#modalInvoice .relative.bg-white");
+        const closeBtn = document.querySelector("#btnCloseModal");
+
+        try {
+            const originalContent = btn.html();
+            btn.prop('disabled', true).html('<i class="fa-solid fa-spinner animate-spin"></i> <span>Generating PDF...</span>');
+
+            closeBtn.style.visibility = 'hidden';
+            const canvas = await html2canvas(invoiceContent, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: "#ffffff",
+                borderRadius: 40
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+            const trxNo = $('#invoice-trx-id').text().replace('ID: #', '');
+            pdf.save(`Invoice-${trxNo}.pdf`);
+
+            btn.prop('disabled', false).html(originalContent);
+            closeBtn.style.visibility = 'visible';
+
+            successAlert('Invoice berhasil diunduh!');
+        } catch (error) {
+            console.error("PDF Error:", error);
+            errorAlert('Gagal membuat PDF.');
+            btn.prop('disabled', false).html('<i class="fa-solid fa-file-pdf"></i> <span>Download Detail Invoice</span>');
+        }
+    });
 
     initPembayaran();
 });
