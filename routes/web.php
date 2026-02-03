@@ -66,6 +66,10 @@ Route::middleware(['auth', 'web'])->group(function () {
         return view('admin.dashboard');
     });
 
+    Route::get('/setting-user', function () {
+        return view('admin.setting-user');
+    });
+
     // route pembeli
     Route::get('/profile', function () {
         return view('pages.profile-pembeli');
