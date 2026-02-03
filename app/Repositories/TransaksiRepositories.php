@@ -3,28 +3,88 @@
 namespace App\Repositories;
 
 use App\Interfaces\TransaksiInterfaces;
+use App\Models\ItemTransaksiModel;
+use App\Models\KeranjangModel;
+use App\Models\LogAktivitasModel;
+use App\Models\ProdukModel;
+use App\Models\TransaksiModel;
+use App\Traits\HttpResponseTraits;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class TransaksiRepositories implements TransaksiInterfaces
 {
-    public function getAllData()
+    use HttpResponseTraits;
+    protected $tansaksiModel;
+    protected $itemtransaksiModel;
+    protected $keranjangModel;
+    protected $produkModel;
+    protected $logAktivitasModel;
+    public function __construct(LogAktivitasModel $logAktivitasModel, ProdukModel $produkModel, TransaksiModel $transaksiModel, ItemTransaksiModel $itemtransaksiModel, KeranjangModel $keranjangModel)
     {
-        throw new \Exception('Not implemented');
+        $this->itemtransaksiModel = $itemtransaksiModel;
+        $this->tansaksiModel = $transaksiModel;
+        $this->keranjangModel = $keranjangModel;
+        $this->produkModel = $produkModel;
+        $this->logAktivitasModel = $logAktivitasModel;
     }
-    public function getDataById($id)
-    {
-        throw new \Exception('Not implemented');
-    }
+    public function getAllData() {}
+    public function getDataById($id) {}
     public function createData(Request $request)
     {
-        throw new \Exception('Not implemented');
+        DB::beginTransaction();
+
+        try {
+            $userId = Auth::id();
+
+            $transaksi = $this->tansaksiModel->create([
+                'id_pembeli' => $userId,
+                'total_harga' => $request->total_harga,
+                'status_transaksi' => 'menunggu',
+                'created_at' => now(),
+            ]);
+            foreach ($request->items as $item) {
+                $produk = $this->produkModel::with('kategori')->findOrFail($item['id_produk']);
+
+                $this->itemtransaksiModel->create([
+                    'id_transaksi' => $transaksi->id,
+                    'id_produk'    => $produk->id,
+                    'nama_produk'  => $produk->nama_produk,
+                    'nama_kategori' => $produk->kategori->nama_kategori ?? '-',
+                    'harga_satuan' => $produk->harga,
+                    'qty'          => $item['qty'],
+                    'subtotal'     => $produk->harga * $item['qty'],
+                ]);
+                $this->logAktivitasModel->updateOrCreate(
+                    [
+                        'id_pembeli'      => $userId,
+                        'id_produk'       => $produk->id,
+                        'jenis_aktivitas' => 'transaksi',
+                    ],
+                    [
+                        'id'              => Str::uuid(),
+                        'skor_minat'      => 5,
+                        'frekuensi'       => DB::raw('frekuensi + 1'),
+                    ]
+                );
+
+                $produk->increment('jumlah_terjual', $item['qty']);
+            }
+            if ($request->has('id_keranjangs') && is_array($request->id_keranjangs) && count($request->id_keranjangs) > 0) {
+                $this->keranjangModel->whereIn('id', $request->id_keranjangs)
+                    ->where('id_pembeli', $userId)
+                    ->delete();
+            }
+            DB::commit();
+
+            return $this->success($transaksi, "Transaksi berhasil dibuat");
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->error($th->getMessage(), 400, $th, class_basename($this), __FUNCTION__);
+        }
     }
-    public function updateData(Request $request, $id)
-    {
-        throw new \Exception('Not implemented');
-    }
-    public function deleteData($id)
-    {
-        throw new \Exception('Not implemented');
-    }
+    public function updateData(Request $request, $id) {}
+    public function deleteData($id) {}
 }
