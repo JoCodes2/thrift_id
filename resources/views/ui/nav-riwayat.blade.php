@@ -12,6 +12,9 @@
             <option value="/riwayat-pesanan/selesai" {{ request()->is('riwayat-pesanan/selesai') ? 'selected' : '' }}>
                 ✅ Filter: Selesai
             </option>
+              <option value="/riwayat-pesanan/dibatalkan" {{ request()->is('riwayat-pesanan/dibatalkan') ? 'selected' : '' }}>
+                ✅ Filter: Dibatalkan
+            </option>
         </select>
         <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
             <i class="fa-solid fa-chevron-down text-[10px]"></i>
@@ -36,6 +39,11 @@
            class="flex-1 px-6 py-2.5 rounded-xl text-xs uppercase tracking-widest transition-all text-center
            {{ request()->is('riwayat-pesanan/selesai') ? 'bg-green-700 text-white shadow-lg shadow-green-100 font-black' : 'text-gray-400 font-bold hover:bg-stone-50 hover:text-gray-600' }}">
             Selesai
+        </a>
+        <a href="/riwayat-pesanan/dibatalkan"
+           class="flex-1 px-6 py-2.5 rounded-xl text-xs uppercase tracking-widest transition-all text-center
+           {{ request()->is('riwayat-pesanan/dibatalkan') ? 'bg-green-700 text-white shadow-lg shadow-green-100 font-black' : 'text-gray-400 font-bold hover:bg-stone-50 hover:text-gray-600' }}">
+            Dibatalkan
         </a>
     </div>
 </div>

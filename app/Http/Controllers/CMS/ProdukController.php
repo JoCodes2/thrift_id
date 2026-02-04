@@ -64,37 +64,29 @@ class ProdukController extends Controller
             $sessionKey = 'last_view_time_' . $idProduk;
             $currentTime = now();
 
-            // 1. Cek jeda 60 detik lewat Session
             if (session()->has($sessionKey)) {
                 $lastViewTime = session()->get($sessionKey);
                 if ($currentTime->diffInSeconds($lastViewTime) < 60) {
-                    return; // Berhenti jika belum 1 menit
+                    return;
                 }
             }
 
-            // 2. Gunakan updateOrCreate agar lebih ringkas dan pasti masuk
-            // updateOrCreate akan mencari data, jika ada diupdate, jika tidak ada dibuatkan baru
             $log = LogAktivitasModel::updateOrCreate(
                 [
                     'id_pembeli'      => $userId,
                     'id_produk'       => $idProduk,
-                    'jenis_aktivitas' => 'lihat_detail',
+                    'jenis_aktivitas' => 'lihat',
                 ],
                 [
                     'skor_minat' => 1,
-                    // Kita akan menangani frekuensi secara manual agar tidak konflik
                 ]
             );
 
-            // Manual increment frekuensi
             $log->increment('frekuensi');
 
-            // 3. Simpan session dan pastikan session ter-write
             session()->put($sessionKey, $currentTime);
-            session()->save(); // Paksa simpan session ke storage
-
+            session()->save();
         } catch (\Exception $e) {
-            // Log error ini sangat penting untuk melihat kenapa gagal (cek storage/logs/laravel.log)
             Log::error("Gagal simpan log aktivitas Produk ID {$idProduk}: " . $e->getMessage());
         }
     }

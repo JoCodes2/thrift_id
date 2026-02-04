@@ -6,6 +6,7 @@ use App\Interfaces\TransaksiInterfaces;
 use App\Models\ItemTransaksiModel;
 use App\Models\KeranjangModel;
 use App\Models\LogAktivitasModel;
+use App\Models\PenilaianModel;
 use App\Models\ProdukModel;
 use App\Models\TransaksiModel;
 use App\Traits\HttpResponseTraits;
@@ -22,14 +23,16 @@ class TransaksiRepositories implements TransaksiInterfaces
     protected $keranjangModel;
     protected $produkModel;
     protected $logAktivitasModel;
+    protected $penilaianModel;
 
-    public function __construct(LogAktivitasModel $logAktivitasModel, ProdukModel $produkModel, TransaksiModel $transaksiModel, ItemTransaksiModel $itemtransaksiModel, KeranjangModel $keranjangModel)
+    public function __construct(LogAktivitasModel $logAktivitasModel, ProdukModel $produkModel, TransaksiModel $transaksiModel, ItemTransaksiModel $itemtransaksiModel, KeranjangModel $keranjangModel, PenilaianModel $penilaianModel)
     {
         $this->itemtransaksiModel = $itemtransaksiModel;
         $this->tansaksiModel = $transaksiModel;
         $this->keranjangModel = $keranjangModel;
         $this->produkModel = $produkModel;
         $this->logAktivitasModel = $logAktivitasModel;
+        $this->penilaianModel = $penilaianModel;
     }
 
     public function getAllData()
@@ -39,7 +42,10 @@ class TransaksiRepositories implements TransaksiInterfaces
 
         $query = $this->tansaksiModel::with([
             'items.produk.deskrisp',
-            'items.produk.toko'
+            'items.produk.toko',
+            'items.produk.review' => function ($q) use ($userId) {
+                $q->where('id_pembeli', $userId);
+            }
         ])
             ->where('id_pembeli', $userId)
             ->latest();
@@ -51,6 +57,38 @@ class TransaksiRepositories implements TransaksiInterfaces
         });
 
         return $this->success($query->get(), "Berhasil mengambil riwayat transaksi");
+    }
+    public function createRating(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $userId = Auth::id();
+
+            $penilaian = $this->penilaianModel->create([
+                'id_pembeli'   => $userId,
+                'id_produk'    => $request->produk_id,
+                'nilai_rating' => $request->rating,
+                'ulasan'       => $request->ulasan,
+            ]);
+
+            $this->logAktivitasModel->updateOrCreate(
+                [
+                    'id_pembeli'      => $userId,
+                    'id_produk'       => $request->produk_id,
+                    'jenis_aktivitas' => 'beri_rating',
+                ],
+                [
+                    'skor_minat'      => 7,
+                    'frekuensi'       => DB::raw('frekuensi + 1'),
+                ]
+            );
+
+            DB::commit();
+            return $this->success($penilaian, "Terima kasih! Ulasan Anda telah berhasil disimpan.");
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->error($th->getMessage(), 400);
+        }
     }
 
     public function getDataById($id)
@@ -129,6 +167,35 @@ class TransaksiRepositories implements TransaksiInterfaces
         }
     }
 
-    public function updateData(Request $request, $id) {}
+    public function updateData(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $userId = Auth::id();
+            $statusBaru = $request->status;
+
+            $item = $this->itemtransaksiModel->where('id', $id)
+                ->whereHas('transaksi', function ($q) use ($userId) {
+                    $q->where('id_pembeli', $userId);
+                })->firstOrFail();
+
+            $item->update([
+                'status_item' => $statusBaru
+            ]);
+
+            if ($statusBaru === 'dibatalkan') {
+                $produk = $this->produkModel->find($item->id_produk);
+                if ($produk) {
+                    $produk->decrement('jumlah_terjual', $item->qty);
+                }
+            }
+
+            DB::commit();
+            return $this->success($item, "Status pesanan berhasil diperbarui menjadi $statusBaru");
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->error($th->getMessage(), 400);
+        }
+    }
     public function deleteData($id) {}
 }
