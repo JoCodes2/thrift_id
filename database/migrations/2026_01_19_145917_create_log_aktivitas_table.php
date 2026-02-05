@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('id_pembeli')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('guest_session_id')->nullable()->index();
             $table->foreignUuid('id_produk')->constrained('produk')->onDelete('cascade');
-            $table->enum('jenis_aktivitas', ['lihat', 'tambah_keranjang', 'transaksi']);
+            $table->enum('jenis_aktivitas', ['beri_rating','lihat', 'tambah_keranjang', 'transaksi']);
             $table->integer('skor_minat');
             $table->integer('frekuensi')->default(1);
             $table->timestamps();

@@ -16,7 +16,6 @@ class keranjangService {
     async getKeranjang() {
         try {
             const response = await this.ajaxRequest(`${appUrl}/thrif-id/keranjang`, 'GET');
-            console.log(response);
 
             return response.data;
         } catch (error) {
@@ -88,60 +87,70 @@ class keranjangService {
         `;
 
             group.items.forEach(item => {
-                const produk = item.produk;
+                const produk = item.produk || {};
                 const kategori = produk.kategori;
-                const gambarName = (produk.deskrisp && produk.deskrisp.length > 0)
-                    ? produk.deskrisp[0].gambar
-                    : 'default.jpg';
-                const imageUrl = `${appUrl}/uploads/gambar/${gambarName}`;
-                const isMinusDisabled = item.qty <= 1 ? 'disabled opacity-20 cursor-not-allowed' : '';
+
+                const deskrisp = (produk.deskrisp && produk.deskrisp.length > 0) ? produk.deskrisp[0] : null;
+                const rawGambar = deskrisp ? deskrisp.gambar : '';
+
+                const isInvalidImg = !rawGambar || rawGambar.includes('default') || rawGambar.trim() === '';
+                const imageUrl = isInvalidImg
+                    ? 'https://placehold.co/600x600/f5f5f4/a8a29e?text=No+Image'
+                    : `${appUrl}/uploads/gambar/${rawGambar}`;
+
+                const isMinusDisabled = (item.qty <= 1) ? 'disabled opacity-20 cursor-not-allowed' : '';
 
                 html += `
-                <div class="p-6 transition-all hover:bg-stone-50/30">
-                    <div class="flex flex-col sm:flex-row gap-6">
-                        <div class="w-full sm:w-28 h-28 flex-shrink-0 bg-stone-100 rounded-2xl overflow-hidden shadow-sm">
-                            <img src="${imageUrl}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400?text=No+Image'">
-                        </div>
+    <div class="p-6 transition-all hover:bg-stone-50/30 animate-fadeIn">
+        <div class="flex flex-col sm:flex-row gap-6">
+            <div class="w-full sm:w-28 h-28 flex-shrink-0 bg-stone-100 rounded-2xl overflow-hidden shadow-sm border border-stone-50">
+                <img src="${imageUrl}"
+                     class="w-full h-full object-cover"
+                     alt="${produk.nama_produk || 'Produk'}"
+                     onerror="this.src='https://placehold.co/600x600/f5f5f4/a8a29e?text=No+Image'">
+            </div>
 
-                        <div class="flex-1 flex flex-col justify-between">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <span class="text-[9px] font-black text-green-700 uppercase tracking-widest bg-green-50 px-2 py-0.5 rounded-md">
-                                        ${kategori ? kategori.nama_kategori : 'Thrift'}
-                                    </span>
-                                    <h3 class="font-bold text-gray-900 text-base mt-1">${produk.nama_produk}</h3>
-                                    <div class="flex items-center gap-2 mt-0.5">
-                                         <p class="text-[10px] text-gray-400 italic">Size: ${produk.deskrisp[0]?.ukuran || '-'}</p>
-                                         <span class="text-gray-200 text-[10px]">|</span>
-                                         <p class="text-[10px] text-gray-400 italic">Kondisi: ${produk.deskrisp[0]?.kondisi || '-'}</p>
-                                    </div>
-                                </div>
-                                <button class="text-stone-300 hover:text-red-500 transition-colors btn-hapus p-2" data-id="${item.id}">
-                                    <i class="fa-solid fa-trash-can text-sm"></i>
-                                </button>
-                            </div>
-
-                            <div class="flex items-center justify-between mt-4">
-                                <span class="text-lg font-black text-gray-900">
-                                    Rp ${new Intl.NumberFormat('id-ID').format(produk.harga)}
-                                </span>
-
-                                <div class="flex items-center gap-1 bg-stone-50 p-1 rounded-xl border border-stone-100">
-                                    <button class="btn-kurang w-7 h-7 flex items-center justify-center text-stone-500 hover:text-green-700 ${isMinusDisabled}"
-                                            data-id-produk="${produk.id}" data-qty="${item.qty}">
-                                        <i class="fa-solid fa-minus text-[10px]"></i>
-                                    </button>
-                                    <span class="w-8 text-center font-bold text-sm text-stone-700">${item.qty}</span>
-                                    <button class="btn-tambah w-7 h-7 flex items-center justify-center text-stone-500 hover:text-green-700"
-                                            data-id-produk="${produk.id}" data-qty="${item.qty}">
-                                        <i class="fa-solid fa-plus text-[10px]"></i>
-                                    </button>
-                                </div>
-                            </div>
+            <div class="flex-1 flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[9px] font-black text-green-700 uppercase tracking-widest bg-green-50 px-2 py-0.5 rounded-md">
+                            ${kategori ? kategori.nama_kategori : 'Fashion'}
+                        </span>
+                        <h3 class="font-bold text-gray-900 text-base mt-1 uppercase tracking-tight">
+                            ${produk.nama_produk || 'Produk Tidak Diketahui'}
+                        </h3>
+                        <div class="flex items-center gap-2 mt-0.5">
+                             <p class="text-[10px] text-gray-400 italic">Size: ${deskrisp?.ukuran || '-'}</p>
+                             <span class="text-gray-200 text-[10px]">|</span>
+                             <p class="text-[10px] text-gray-400 italic">Kondisi: ${deskrisp?.kondisi || '-'}</p>
                         </div>
                     </div>
+                    <button class="text-stone-300 hover:text-red-500 transition-colors btn-hapus p-2" data-id="${item.id}">
+                        <i class="fa-solid fa-trash-can text-sm"></i>
+                    </button>
                 </div>
-            `;
+
+                <div class="flex items-center justify-between mt-4">
+                    <span class="text-lg font-black text-gray-900 tracking-tighter">
+                        Rp ${new Intl.NumberFormat('id-ID').format(produk.harga || 0)}
+                    </span>
+
+                    <div class="flex items-center gap-1 bg-stone-50 p-1 rounded-xl border border-stone-100">
+                        <button class="btn-kurang w-7 h-7 flex items-center justify-center text-stone-500 hover:text-green-700 transition-all ${isMinusDisabled}"
+                                data-id-produk="${produk.id}" data-qty="${item.qty}">
+                            <i class="fa-solid fa-minus text-[10px]"></i>
+                        </button>
+                        <span class="w-8 text-center font-bold text-sm text-stone-700">${item.qty}</span>
+                        <button class="btn-tambah w-7 h-7 flex items-center justify-center text-stone-500 hover:text-green-700 transition-all"
+                                data-id-produk="${produk.id}" data-qty="${item.qty}">
+                            <i class="fa-solid fa-plus text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
             });
 
             html += `</div></div>`;

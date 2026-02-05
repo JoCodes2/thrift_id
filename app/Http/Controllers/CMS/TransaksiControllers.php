@@ -33,4 +33,13 @@ class TransaksiControllers extends Controller
     {
         return $this->transaksiRepo->deleteData($id);
     }
+    public function storeRating(Request $request)
+    {
+        $request->validate([
+            'produk_id' => 'required|exists:produk,id',
+            'rating'    => 'required|integer|min:1|max:5',
+        ]);
+
+        return $this->transaksiRepo->createRating($request);
+    }
 }

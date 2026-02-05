@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('email_toko');
             $table->string('no_hp_toko');
             $table->text('alamat_toko');
-            $table->string('foto');
+            $table->string('foto')->nullable();
             $table->year('tahun_terdaftar');
             $table->timestamps();
         });

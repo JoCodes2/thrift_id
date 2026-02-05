@@ -20,11 +20,20 @@
                         </span>
                     </div>
 
-                    <div
-                        class="aspect-square bg-stone-100 rounded-[3rem] overflow-hidden border border-gray-100 shadow-sm transition-transform duration-500 hover:scale-[1.01]">
-                        <img src="{{ asset('uploads/gambar/' . ($produk->deskrisp->first()->gambar ?? 'default.jpg')) }}"
-                            alt="{{ $produk->nama_produk }}" class="w-full h-full object-cover">
-                    </div>
+                  @php
+                    $mainImage = $produk->deskrisp->first();
+                    $mainImgName = $mainImage ? $mainImage->gambar : '';
+
+                    $urlMainImage = ($mainImgName && !str_contains($mainImgName, 'default'))
+                        ? asset('uploads/gambar/' . $mainImgName)
+                        : 'https://placehold.co/800x800/f5f5f4/a8a29e?text=No+Product+Image';
+                @endphp
+
+                <div class="aspect-square bg-stone-100 rounded-[3rem] overflow-hidden border border-gray-100 shadow-sm transition-transform duration-500 hover:scale-[1.01]">
+                    <img src="{{ $urlMainImage }}"
+                        alt="{{ $produk->nama_produk }}"
+                        class="w-full h-full object-cover">
+                </div>
                 </div>
 
                 <div class="flex flex-col">
@@ -70,13 +79,19 @@
                     <div
                         class="flex items-center p-6 border-2 border-stone-100 rounded-[2.5rem] mb-8 group hover:border-green-700/20 hover:bg-green-50/10 transition-all duration-300">
                         <div class="relative">
-                            <div
-                                class="w-16 h-16 rounded-2xl overflow-hidden bg-stone-100 shadow-sm border border-stone-200 p-1 flex-shrink-0">
-                                <img src="{{ asset('uploads/foto/' . ($produk->toko->foto ?? 'default.jpg')) }}"
+                          @php
+                                $fotoToko = $produk->toko->foto ?? '';
+                                $urlFotoToko = ($fotoToko && !str_contains($fotoToko, 'default'))
+                                    ? asset('uploads/foto/' . $fotoToko)
+                                    : 'https://placehold.co/200x200/f5f5f4/a8a29e?text=Store';
+                            @endphp
+
+                            <div class="w-16 h-16 rounded-2xl overflow-hidden bg-stone-100 shadow-sm border border-stone-200 p-1 flex-shrink-0">
+                                <img src="{{ $urlFotoToko }}"
                                     alt="{{ $produk->toko->nama_toko ?? 'Logo Toko' }}"
                                     class="w-full h-full object-cover rounded-xl">
                             </div>
-                            <div
+                                                        <div
                                 class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-600 rounded-full border-2 border-white flex items-center justify-center">
                                 <i class="fa-solid fa-check text-[8px] text-white"></i>
                             </div>

@@ -44,6 +44,8 @@ Route::get('/produk-admin', function () {
     return view('admin.produk');
 });
 
+
+Route::get('/produk-unggulan', [ProdukController::class, 'getProdukUnggulan'])->name('produk.unggulan');
 // route auth
 Route::get('/login', function () {
     return view('auth.login');
@@ -78,6 +80,9 @@ Route::middleware(['auth', 'web'])->group(function () {
     });
     Route::get('/riwayat-pesanan/selesai', function () {
         return view('pages.riwayat-pesanan-selesai');
+    });
+    Route::get('/riwayat-pesanan/dibatalkan', function () {
+        return view('pages.riwayat-pesanan-dibatalkan');
     });
     Route::get('/keranjang', function () {
         return view('pages.keranjang');
@@ -136,6 +141,7 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::prefix('transaksi')->controller(TransaksiControllers::class)->group(function () {
             Route::get('/', 'getAllData');
             Route::post('/create', 'createData');
+            Route::post('/riview', 'storeRating');
             Route::get('/get/{id}', 'getDataById');
             Route::post('/update/{id}', 'updateData');
             Route::delete('/delete/{id}', 'deleteData');

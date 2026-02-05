@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('id_transaksi')->constrained('transaksi')->onDelete('cascade');
             $table->foreignUuid('id_produk')->constrained('produk');
 
-            $table->enum('status_item', ['menunggu', 'dikirim', 'selesai'])->default('menunggu');
+            $table->enum('status_item', ['menunggu', 'dikirim', 'selesai', 'dibatalkan'])->default('menunggu');
 
             $table->string('nama_produk');
             $table->string('nama_kategori');
