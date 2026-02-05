@@ -28,14 +28,28 @@ class TokoRepositories implements TokoInterfaces
     //     return $data->isEmpty() ? $this->dataNotFound() : $this->success($data);
     // }
 
-    public function getAllData()
-    {
-        $data = $this->TokoModel::with('user:id,nama')->get();
+    // public function getAllData()
+    // {
+    //     $data = $this->TokoModel::with('user:id,nama')->get();
 
-        return $data->isEmpty()
-            ? $this->dataNotFound()
-            : $this->success($data);
-    }
+    //     return $data->isEmpty()
+    //         ? $this->dataNotFound()
+    //         : $this->success($data);
+    // }
+
+    public function getAllData()
+{
+    $userId = Auth::id();
+
+    $data = $this->TokoModel
+        ->with('user:id,nama')
+        ->where('user_id', $userId)
+        ->get();
+
+    return $data->isEmpty()
+        ? $this->dataNotFound()
+        : $this->success($data);
+}
 
 
     public function createData(TokoRequest $request)

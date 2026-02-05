@@ -44,6 +44,10 @@ Route::get('/produk-admin', function () {
     return view('admin.produk');
 });
 
+Route::get('/transaksi', function () {
+    return view('admin.transaksi');
+});
+
 // route auth
 Route::get('/login', function () {
     return view('auth.login');
