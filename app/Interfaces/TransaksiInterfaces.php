@@ -13,4 +13,5 @@ interface TransaksiInterfaces
     public function deleteData($id);
     public function transaksiAdmin();
     public function updateStatusItem($id, $status);
+    public function createRating(Request $request);
 }

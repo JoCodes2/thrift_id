@@ -71,18 +71,26 @@ public function getAllData()
     public function getAllForWeb()
     {
         return ProdukModel::with(['kategori', 'toko', 'deskrisp'])
-            ->withAvg('review as rating_rata_rata', 'nilai_rating')
+            ->withAvg('review as rating', 'nilai_rating')
             ->withCount('review as total_ulasan')
+            ->where('status_stok', 'tersedia')
+            ->latest()
             ->get();
     }
 
     public function getFilteredForWeb($categoryIds = null)
     {
-        $query = ProdukModel::with(['kategori', 'toko', 'deskrisp']);
+        $query = ProdukModel::with(['kategori', 'toko', 'deskrisp'])
+            ->withAvg('review as rating', 'nilai_rating')
+            ->withCount('review as total_ulasan')
+            ->where('status_stok', 'tersedia');
+
         if ($categoryIds) {
-            $query->whereIn('id_kategori', $categoryIds);
+            $ids = is_array($categoryIds) ? $categoryIds : explode(',', $categoryIds);
+            $query->whereIn('id_kategori', $ids);
         }
-        return $query->get();
+
+        return $query->latest()->get();
     }
 
     public function getDataByIdForWeb($id)

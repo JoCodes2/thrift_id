@@ -68,135 +68,141 @@
         </div>
     </section>
 
-    <section class="py-16 bg-stone-50">
+
+<section class="py-16 bg-stone-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-end justify-between mb-10">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
                 <div>
-                    <h2 class="text-2xl font-playfair text-gray-900  font-black uppercase tracking-tight">Produk <span class="text-green-700">Terlaris.</span></h2>
-                    <p class="text-gray-400 text-[11px] font-medium italic mt-1 uppercase tracking-widest">Koleksi paling dicari minggu ini</p>
+                    <h2 class="text-2xl font-playfair text-gray-900 font-black uppercase tracking-tight">
+                        Koleksi <span class="text-green-700">Pilihan.</span>
+                    </h2>
+                    <p id="filter-label" class="text-gray-400 text-[11px] font-medium italic mt-1 uppercase tracking-widest">
+                        Menampilkan produk terbaru minggu ini
+                    </p>
                 </div>
-                <a href="{{ url('/produk') }}" class="px-5 py-2 bg-white border border-stone-200 rounded-full text-[9px] font-bold uppercase tracking-widest hover:bg-stone-900 hover:text-white transition-all shadow-sm">Lihat Semua</a>
+
+                <div class="relative inline-block w-full md:w-64">
+                    <select id="filter-produk" class="w-full bg-white border border-stone-200 text-gray-900 text-[10px] font-bold uppercase tracking-widest rounded-xl px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-green-700/20 transition-all cursor-pointer shadow-sm">
+                        <option value="latest">✨ Produk Terbaru</option>
+                        <option value="terlaris">🔥 Produk Terlaris</option>
+                        <option value="terbaik">⭐ Rating Terbaik</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
+                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                    </div>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-                <div class="bg-white rounded-[1.5rem] overflow-hidden border border-stone-100 shadow-sm hover:shadow-xl transition-all duration-500 group">
-                    <div class="relative h-60 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&q=80" alt="Product" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute top-3 left-3">
-                            <span class="bg-green-700/90 backdrop-blur-md text-white text-[9px] font-bold px-3 py-1.5 rounded-full uppercase tracking-tighter">Tersedia</span>
-                        </div>
-                        <button class="absolute top-3 right-3 bg-white/90 backdrop-blur-md w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-all shadow-sm">
-                            <i class="fa-regular fa-heart text-sm"></i>
-                        </button>
-                    </div>
-
-                    <div class="p-5">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[9px] font-black text-green-700 uppercase tracking-widest italic">Jackets</span>
-                            <div class="flex items-center text-orange-400 text-[10px] font-bold">
-                                <i class="fa-solid fa-star mr-1"></i>
-                                <span class="text-gray-900">4.8</span>
-                            </div>
-                        </div>
-
-                        <h3 class="font-bold text-gray-900 text-sm mb-1 truncate">Vintage Denim Jacket</h3>
-                        <p class="text-[9px] text-gray-400 mb-4 uppercase font-bold italic flex items-center tracking-tight">
-                            <i class="fa-solid fa-shop mr-1.5 text-green-600"></i> ThriftVibe Official
-                        </p>
-
-                        <div class="flex items-center justify-between mb-5">
-                            <p class="text-lg font-black text-gray-900 tracking-tight">Rp 185.000</p>
-                            <span class="text-[9px] text-gray-400 font-bold uppercase tracking-tighter">12 Terjual</span>
-                        </div>
-
-                        <div class="grid grid-cols-5 gap-2">
-                            <button class="col-span-1 bg-stone-100 hover:bg-green-700 hover:text-white text-gray-600 h-10 rounded-xl transition-all flex items-center justify-center">
-                                <i class="fa-solid fa-cart-plus text-sm"></i>
-                            </button>
-                            <a href="{{ url('/detail-produk') }}" class="col-span-4 bg-green-700 hover:bg-black text-white font-bold text-[10px] uppercase h-10 rounded-xl transition-all flex items-center justify-center space-x-2 tracking-widest">
-                                <i class="fa-solid fa-eye text-xs"></i>
-                                <span>Detail</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-[1.5rem] overflow-hidden border border-stone-100 shadow-sm hover:shadow-xl transition-all duration-500 group">
-                    <div class="relative h-60 overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=500&q=80" alt="Product" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute top-3 left-3">
-                            <span class="bg-stone-900/90 backdrop-blur-md text-white text-[9px] font-bold px-3 py-1.5 rounded-full uppercase tracking-tighter">Terbatas</span>
-                        </div>
-                        <button class="absolute top-3 right-3 bg-white/90 backdrop-blur-md w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-all shadow-sm">
-                            <i class="fa-regular fa-heart text-sm"></i>
-                        </button>
-                    </div>
-
-                    <div class="p-5">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[9px] font-black text-green-700 uppercase tracking-widest italic">Accessories</span>
-                            <div class="flex items-center text-orange-400 text-[10px] font-bold">
-                                <i class="fa-solid fa-star mr-1"></i>
-                                <span class="text-gray-900">4.9</span>
-                            </div>
-                        </div>
-
-                        <h3 class="font-bold text-gray-900 text-sm mb-1 truncate">Vintage Gold Watch</h3>
-                        <p class="text-[9px] text-gray-400 mb-4 uppercase font-bold italic flex items-center tracking-tight">
-                            <i class="fa-solid fa-shop mr-1.5 text-green-600"></i> Luxury Second
-                        </p>
-
-                        <div class="flex items-center justify-between mb-5">
-                            <p class="text-lg font-black text-gray-900 tracking-tight">Rp 320.000</p>
-                            <span class="text-[9px] text-gray-400 font-bold uppercase tracking-tighter">5 Terjual</span>
-                        </div>
-
-                        <div class="grid grid-cols-5 gap-2">
-                            <button class="col-span-1 bg-stone-100 hover:bg-green-700 hover:text-white text-gray-600 h-10 rounded-xl transition-all flex items-center justify-center">
-                                <i class="fa-solid fa-cart-plus text-sm"></i>
-                            </button>
-                            <a href="{{ url('/detail-produk') }}" class="col-span-4 bg-green-700 hover:bg-black text-white font-bold text-[10px] uppercase h-10 rounded-xl transition-all flex items-center justify-center space-x-2 tracking-widest">
-                                <i class="fa-solid fa-eye text-xs"></i>
-                                <span>Detail</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-[1.5rem] overflow-hidden border border-stone-100 shadow-sm hover:shadow-xl transition-all duration-500 group opacity-90 hidden lg:block">
-                     <div class="relative h-60 overflow-hidden bg-stone-100 flex items-center justify-center text-stone-300">
-                        <i class="fa-solid fa-image text-4xl"></i>
-                     </div>
-                     <div class="p-5">
-                        <div class="h-4 w-20 bg-stone-100 rounded mb-2"></div>
-                        <div class="h-4 w-full bg-stone-100 rounded mb-2"></div>
-                        <div class="h-8 w-full bg-stone-100 rounded"></div>
-                     </div>
-                </div>
-
-                <div class="bg-white rounded-[1.5rem] overflow-hidden border border-stone-100 shadow-sm hover:shadow-xl transition-all duration-500 group opacity-90 hidden lg:block">
-                     <div class="relative h-60 overflow-hidden bg-stone-100 flex items-center justify-center text-stone-300">
-                        <i class="fa-solid fa-image text-4xl"></i>
-                     </div>
-                     <div class="p-5">
-                        <div class="h-4 w-20 bg-stone-100 rounded mb-2"></div>
-                        <div class="h-4 w-full bg-stone-100 rounded mb-2"></div>
-                        <div class="h-8 w-full bg-stone-100 rounded"></div>
-                     </div>
-                </div>
-
+            <div id="container-produk" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                @for($i=0; $i<4; $i++)
+                    <div class="animate-pulse bg-white rounded-[1.5rem] p-5 h-80 shadow-sm border border-stone-100"></div>
+                @endfor
             </div>
         </div>
     </section>
 
     <style>
-        @keyframes bounce-slow {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .animate-bounce-slow {
-            animation: bounce-slow 3s infinite ease-in-out;
-        }
+        @keyframes bounce-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .animate-bounce-slow { animation: bounce-slow 3s infinite ease-in-out; }
     </style>
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function() {
+            loadProduk('latest');
+
+            $('#filter-produk').on('change', function() {
+                const selectedFilter = $(this).val();
+
+                const labels = {
+                    'latest': 'Menampilkan produk terbaru minggu ini',
+                    'terlaris': 'Koleksi paling dicari minggu ini',
+                    'terbaik': 'Kualitas terjamin dari feedback pembeli'
+                };
+                $('#filter-label').text(labels[selectedFilter]);
+
+                loadProduk(selectedFilter);
+            });
+
+            function loadProduk(filter) {
+                $('#container-produk').css('opacity', '0.5');
+
+                $.ajax({
+                    url: `${appUrl}/produk-unggulan?filter=${filter}`,
+                    method: 'GET',
+                    type : 'json',
+                    success: function(response) {
+                        $('#container-produk').css('opacity', '1');
+                        renderCards(response.data, '#container-produk');
+                    },
+                    error: function() {
+                        $('#container-produk').css('opacity', '1');
+                        $('#container-produk').html('<p class="text-xs text-red-500 italic col-span-full text-center">Gagal memuat data produk.</p>');
+                    }
+                });
+            }
+
+            function renderCards(data, containerId) {
+                let html = '';
+                if(data.length === 0) {
+                    $(containerId).html('<p class="text-xs text-stone-400 italic col-span-full text-center py-10">Produk tidak ditemukan.</p>');
+                    return;
+                }
+
+                data.forEach(item => {
+                    const rating = item.rating ? parseFloat(item.rating).toFixed(1) : '0.0';
+                    const harga = new Intl.NumberFormat('id-ID').format(item.harga);
+                    let gambar;
+                    if (item.deskrisp &&
+                        item.deskrisp.length > 0 &&
+                        item.deskrisp[0].gambar &&
+                        item.deskrisp[0].gambar !== 'default_produk.jpg' &&
+                        item.deskrisp[0].gambar.trim() !== '') {
+
+                        gambar = `/uploads/gambar/${item.deskrisp[0].gambar}`;
+                    } else {
+                        gambar = `https://placehold.co/600x600/f5f5f4/a8a29e?text=No+Image`;
+                    }
+                    html += `
+                    <div class="bg-white rounded-[1.5rem] overflow-hidden border border-stone-100 shadow-sm hover:shadow-xl transition-all duration-500 group animate-fadeIn">
+                        <div class="relative h-60 overflow-hidden">
+                            <img src="${gambar}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute top-3 left-3">
+                                <span class="bg-green-700/90 backdrop-blur-md text-white text-[9px] font-bold px-3 py-1.5 rounded-full uppercase tracking-tighter">Tersedia</span>
+                            </div>
+                        </div>
+
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[9px] font-black text-green-700 uppercase tracking-widest italic">${item.id_kategori?.nama_kategori || 'Fashion'}</span>
+                                <div class="flex items-center text-orange-400 text-[10px] font-bold">
+                                    <i class="fa-solid fa-star mr-1"></i>
+                                    <span class="text-gray-900">${rating}</span>
+                                </div>
+                            </div>
+
+                            <h3 class="font-bold text-gray-900 text-sm mb-1 truncate uppercase tracking-tight">${item.nama_produk}</h3>
+                            <p class="text-[9px] text-gray-400 mb-4 uppercase font-bold italic flex items-center tracking-tight">
+                                <i class="fa-solid fa-shop mr-1.5 text-green-600"></i> ${item.id_toko?.nama_toko || 'Thrift Store'}
+                            </p>
+
+                            <div class="flex items-center justify-between mb-5">
+                                <p class="text-lg font-black text-gray-900 tracking-tight">Rp ${harga}</p>
+                                <span class="text-[9px] text-gray-400 font-bold uppercase tracking-tighter">${item.jumlah_terjual || 0} Terjual</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-2">
+                                <a href="/detail-produk/${item.id}" class="col-span-4 bg-green-700 hover:bg-black text-white font-bold text-[10px] uppercase h-10 rounded-xl transition-all flex items-center justify-center space-x-2 tracking-widest">
+                                    <i class="fa-solid fa-eye text-xs"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+                $(containerId).html(html);
+            }
+        });
+    </script>
 @endsection

@@ -45,4 +45,13 @@ class TransaksiControllers extends Controller
         $status = $request->input('status', 'dikirim');
         return $this->transaksiRepo->updateStatusItem($id, $status);
     }
+    public function storeRating(Request $request)
+    {
+        $request->validate([
+            'produk_id' => 'required|exists:produk,id',
+            'rating'    => 'required|integer|min:1|max:5',
+        ]);
+
+        return $this->transaksiRepo->createRating($request);
+    }
 }
