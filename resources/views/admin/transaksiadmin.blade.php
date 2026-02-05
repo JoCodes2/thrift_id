@@ -23,6 +23,7 @@
                             <th>Alamat Pembeli</th>
                             <th>Email Pembeli</th>
                             <th>Status Item</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tBody">
@@ -51,6 +52,11 @@
                         let tableBody = "";
                         if (response.data && response.data.length > 0) {
                             $.each(response.data, function(index, item) {
+                                let actionButton = '';
+                                if (item.status_item === 'menunggu') {
+                                    actionButton =
+                                        `<button type="button" class="btn btn-success btn-sm kirim-btn" data-id="${item.id}">Kirim</button>`;
+                                }
                                 tableBody += `<tr>
                                     <td>${index + 1}</td>
                                     <td>${item.nama_toko}</td>
@@ -65,10 +71,12 @@
                                     <td>${item.alamat_pembeli}</td>
                                     <td>${item.email_pembeli}</td>
                                     <td>${item.status_item}</td>
+                                    <td>${actionButton}</td>
                                 </tr>`;
                             });
                         } else {
-                            tableBody = `<tr><td colspan="11" class="text-center">Tidak ada data transaksi</td></tr>`;
+                            tableBody =
+                                `<tr><td colspan="12" class="text-center">Tidak ada data transaksi</td></tr>`;
                         }
 
                         $("#tBody").html(tableBody);
@@ -84,12 +92,36 @@
                     },
                     error: function(xhr, status, error) {
                         console.log("Gagal mengambil data dari server:", error);
-                        $("#tBody").html(`<tr><td colspan="11" class="text-center">Gagal memuat data</td></tr>`);
+                        $("#tBody").html(
+                            `<tr><td colspan="12" class="text-center">Gagal memuat data</td></tr>`);
                     }
                 });
             }
 
             getData();
+
+            // Handle klik tombol kirim
+            $(document).on('click', '.kirim-btn', function() {
+                const itemId = $(this).data('id');
+                if (confirm('Apakah Anda yakin ingin mengubah status item ini menjadi "dikirim"?')) {
+                    $.ajax({
+                        url: `/thrif-id/transaksi/update-status/${itemId}`,
+                        method: "POST",
+                        data: {
+                            status: 'dikirim',
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            alert('Status berhasil diperbarui');
+                            getData(); // Refresh data
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("Gagal memperbarui status:", error);
+                            alert('Gagal memperbarui status');
+                        }
+                    });
+                }
+            });
 
         });
     </script>

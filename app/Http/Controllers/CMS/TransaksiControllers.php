@@ -38,4 +38,11 @@ class TransaksiControllers extends Controller
     {
         return $this->transaksiRepo->transaksiAdmin();
     }
+
+    public function updateStatusItem($id)
+    {
+        $request = request();
+        $status = $request->input('status', 'dikirim');
+        return $this->transaksiRepo->updateStatusItem($id, $status);
+    }
 }

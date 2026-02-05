@@ -144,6 +144,7 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::post('/update/{id}', 'updateData');
             Route::delete('/delete/{id}', 'deleteData');
             Route::get('/admin', 'transaksiAdmin');
+            Route::post('/update-status/{id}', 'updateStatusItem');
         });
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     });

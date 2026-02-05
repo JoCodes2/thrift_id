@@ -141,6 +141,7 @@ class TransaksiRepositories implements TransaksiInterfaces
             ->map(function ($transaksi) {
                 return $transaksi->items->map(function ($item) use ($transaksi) {
                     return [
+                        'id' => $item->id,
                         'nama_toko' => $item->produk->toko->nama_toko ?? '-',
                         'kode_transaksi' => $transaksi->nomor_transaksi,
                         'foto_produk' => $item->produk->deskrisp->first()->gambar ?? null,
@@ -157,6 +158,17 @@ class TransaksiRepositories implements TransaksiInterfaces
             ->flatten(1);
 
         return $this->success($data, "Berhasil mengambil data transaksi admin");
+    }
+
+    public function updateStatusItem($id, $status)
+    {
+        try {
+            $item = $this->itemtransaksiModel->findOrFail($id);
+            $item->update(['status_item' => $status]);
+            return $this->success($item, "Status item berhasil diperbarui");
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage(), 400, $th, class_basename($this), __FUNCTION__);
+        }
     }
 
     public function updateData(Request $request, $id) {}
