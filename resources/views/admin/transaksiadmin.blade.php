@@ -9,29 +9,32 @@
 
         <div class="card-body py-2">
             <div class="py-3">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Toko</th>
-                            <th>Kode Transaksi</th>
-                            <th>Foto Produk</th>
-                            <th>Nama Produk</th>
-                            <th>Tanggal Pembelian</th>
-                            <th>Harga</th>
-                            <th>Jumlah</th>
-                            <th>Alamat Pembeli</th>
-                            <th>Email Pembeli</th>
-                            <th>Status Item</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tBody">
-                        <tr>
-                            <td colspan="11" class="text-center">Memuat data...</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Pembeli</th>
+                                <th>Kode Transaksi</th>
+                                <th>Nama Produk</th>
+                                <th>Tanggal Pembelian</th>
+                                <th>Harga</th>
+                                <th>Jumlah</th>
+                                <th>Total Harga</th>
+                                <th>Alamat Pembeli</th>
+                                <th>Email Pembeli</th>
+                                <th>Status Item</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tBody">
+                            <tr>
+                                <td colspan="12" class="text-center">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
     </div>
@@ -59,15 +62,14 @@
                                 }
                                 tableBody += `<tr>
                                     <td>${index + 1}</td>
-                                    <td>${item.nama_toko}</td>
+                                    <td>${item.nama_pembeli}</td>
                                     <td>${item.kode_transaksi}</td>
-                                    <td>
-                                        ${item.foto_produk ? `<img src="/storage/uploads/foto/${item.foto_produk}" alt="Foto Produk" style="width: 50px; height: 50px; object-fit: cover;">` : '-'}
-                                    </td>
+
                                     <td>${item.nama_produk}</td>
                                     <td>${item.tanggal_pembelian}</td>
                                     <td>Rp ${item.harga.toLocaleString()}</td>
                                     <td>${item.jumlah}</td>
+                                    <td>Rp ${item.total_harga.toLocaleString()}</td>
                                     <td>${item.alamat_pembeli}</td>
                                     <td>${item.email_pembeli}</td>
                                     <td>${item.status_item}</td>
@@ -100,28 +102,75 @@
 
             getData();
 
-            // Handle klik tombol kirim
+            // // Handle klik tombol kirim
+            // $(document).on('click', '.kirim-btn', function() {
+            //     const itemId = $(this).data('id');
+            //     if (confirm('Apakah Anda yakin ingin mengubah status item ini menjadi "dikirim"?')) {
+            //         $.ajax({
+            //             url: `/thrif-id/transaksi/update-status/${itemId}`,
+            //             method: "POST",
+            //             data: {
+            //                 status: 'dikirim',
+            //                 _token: '{{ csrf_token() }}'
+            //             },
+            //             success: function(response) {
+            //                 alert('Status berhasil diperbarui');
+            //                 getData(); // Refresh data
+            //             },
+            //             error: function(xhr, status, error) {
+            //                 console.log("Gagal memperbarui status:", error);
+            //                 alert('Gagal memperbarui status');
+            //             }
+            //         });
+            //     }
+            // });
+
             $(document).on('click', '.kirim-btn', function() {
                 const itemId = $(this).data('id');
-                if (confirm('Apakah Anda yakin ingin mengubah status item ini menjadi "dikirim"?')) {
-                    $.ajax({
-                        url: `/thrif-id/transaksi/update-status/${itemId}`,
-                        method: "POST",
-                        data: {
-                            status: 'dikirim',
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function(response) {
-                            alert('Status berhasil diperbarui');
-                            getData(); // Refresh data
-                        },
-                        error: function(xhr, status, error) {
-                            console.log("Gagal memperbarui status:", error);
-                            alert('Gagal memperbarui status');
-                        }
-                    });
-                }
+
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Ubah status item menjadi dikirim?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, kirim',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/thrif-id/transaksi/update-status/${itemId}`,
+                            method: "POST",
+                            data: {
+                                status: 'dikirim',
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Status item berhasil diperbarui',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+
+                                // 🔥 reload browser setelah alert
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1500);
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: 'Gagal memperbarui status item'
+                                });
+                            }
+                        });
+                    }
+                });
             });
+
+
 
         });
     </script>

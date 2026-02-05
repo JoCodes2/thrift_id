@@ -142,13 +142,13 @@ class TransaksiRepositories implements TransaksiInterfaces
                 return $transaksi->items->map(function ($item) use ($transaksi) {
                     return [
                         'id' => $item->id,
-                        'nama_toko' => $item->produk->toko->nama_toko ?? '-',
+                        'nama_pembeli' => $transaksi->pembeli->nama ?? '-',
                         'kode_transaksi' => $transaksi->nomor_transaksi,
-                        'foto_produk' => $item->produk->deskrisp->first()->gambar ?? null,
                         'nama_produk' => $item->nama_produk,
                         'tanggal_pembelian' => $transaksi->created_at->format('Y-m-d H:i:s'),
                         'harga' => $item->harga_satuan,
                         'jumlah' => $item->qty,
+                        'total_harga' => $transaksi->total_harga,
                         'alamat_pembeli' => $transaksi->pembeli->alamat ?? '-',
                         'email_pembeli' => $transaksi->pembeli->email,
                         'status_item' => $item->status_item,
