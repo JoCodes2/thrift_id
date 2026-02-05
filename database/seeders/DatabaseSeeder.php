@@ -67,7 +67,6 @@ class DatabaseSeeder extends Seeder
                 'email_toko' => "shop" . ($index + 1) . "@gmail.com",
                 'no_hp_toko' => "08555544433$index",
                 'alamat_toko' => "Pasar Klontong No $index",
-                'foto' => 'default_toko.jpg',
                 'tahun_terdaftar' => 2024,
                 'created_at' => now(),
             ]);
@@ -97,12 +96,10 @@ class DatabaseSeeder extends Seeder
                     'created_at' => now(),
                 ]);
 
-                // Deskripsi Produk
                 DB::table('deskripsi_produk')->insert([
                     'id' => Str::uuid(),
                     'produk_id' => $id,
                     'deskripsi' => 'Kondisi mulus like new.',
-                    'gambar' => 'default_produk.jpg',
                     'bahan' => 'Katun',
                     'ukuran' => 'L',
                     'kondisi' => '9/10',

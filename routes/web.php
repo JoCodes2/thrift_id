@@ -44,6 +44,8 @@ Route::get('/produk-admin', function () {
     return view('admin.produk');
 });
 
+
+Route::get('/produk-unggulan', [ProdukController::class, 'getProdukUnggulan'])->name('produk.unggulan');
 // route auth
 Route::get('/login', function () {
     return view('auth.login');

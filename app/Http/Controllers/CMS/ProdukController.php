@@ -5,6 +5,7 @@ namespace App\Http\Controllers\CMS;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProdukRequest;
 use App\Models\LogAktivitasModel;
+use App\Models\ProdukModel;
 use App\Repositories\KategoriRepositories;
 use App\Repositories\ProdukRepositories;
 
@@ -55,7 +56,6 @@ class ProdukController extends Controller
     private function simpanLogAktivitas($idProduk)
     {
         try {
-            // Cek Login
             if (!Auth::check()) {
                 return;
             }
@@ -110,5 +110,40 @@ class ProdukController extends Controller
     public function deleteData($id)
     {
         return $this->ProdukRepo->deleteData($id);
+    }
+
+
+
+    // filter beranda
+    public function getProdukUnggulan(Request $request)
+    {
+        try {
+            $filter = $request->query('filter');
+
+            $query = ProdukModel::select('produk.*')
+                ->with(['deskrisp', 'toko', 'kategori'])
+                ->withAvg('review as rating', 'nilai_rating')
+                ->where('status_stok', 'tersedia');
+
+            if ($filter === 'terlaris') {
+                $query->orderBy('produk.jumlah_terjual', 'desc');
+            } elseif ($filter === 'terbaik') {
+                $query->orderBy('rating', 'desc');
+            } else {
+                $query->orderBy('produk.created_at', 'desc');
+            }
+
+            $data = $query->limit(4)->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

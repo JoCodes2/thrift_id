@@ -6,6 +6,21 @@ $(document).ready(function () {
     const appUrl = window.location.origin;
     let selectedRating = 0;
 
+    // --- HELPER LOGIKA GAMBAR ---
+    function getSafeProductImage(imgName) {
+        const isInvalid = !imgName || imgName.includes('default') || imgName.trim() === '';
+        return isInvalid
+            ? 'https://placehold.co/600x600/f5f5f4/a8a29e?text=No+Image'
+            : `${appUrl}/uploads/gambar/${imgName}`;
+    }
+
+    function getSafeStoreLogo(logoName) {
+        const isInvalid = !logoName || logoName.includes('default') || logoName.trim() === '';
+        return isInvalid
+            ? 'https://placehold.co/200x200/f5f5f4/a8a29e?text=Store'
+            : `${appUrl}/uploads/foto/${logoName}`;
+    }
+
     async function loadData() {
         const path = window.location.pathname.split('/');
         let statusFilter = path[path.length - 1];
@@ -101,17 +116,21 @@ $(document).ready(function () {
             }
         }
 
-        const imagePath = firstItem.produk.deskrisp?.[0]?.gambar
-            ? `/uploads/gambar/${firstItem.produk.deskrisp[0].gambar}`
-            : 'https://via.placeholder.com/150';
+        // --- Logika Gambar Produk ---
+        const imagePath = getSafeProductImage(firstItem.produk.deskrisp?.[0]?.gambar);
+
+        // --- Logika Logo Toko ---
+        const storeLogoPath = getSafeStoreLogo(group.toko.foto);
 
         return `
         <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden mb-6 transition-all ${isCancelled ? 'bg-stone-50/50' : 'hover:scale-[1.01]'}">
             <div class="p-6 md:p-8 ${isCancelled ? 'grayscale opacity-70' : ''}">
                 <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4 border-b border-stone-50 pb-6">
                     <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-stone-50 rounded-2xl flex items-center justify-center text-green-700 border border-stone-100 shadow-inner">
-                            <i class="fa-solid fa-store text-xl"></i>
+                        <div class="w-12 h-12 bg-stone-50 rounded-2xl overflow-hidden flex items-center justify-center border border-stone-100 shadow-inner p-1">
+                            <img src="${storeLogoPath}"
+                                 class="w-full h-full object-cover rounded-xl"
+                                 onerror="this.src='https://placehold.co/200x200/f5f5f4/a8a29e?text=Store'">
                         </div>
                         <div>
                             <h3 class="font-black text-gray-900 text-sm italic">${group.toko.nama_toko}</h3>
@@ -125,7 +144,9 @@ $(document).ready(function () {
 
                 <div class="flex items-center gap-6 mb-8">
                     <div class="w-20 h-20 bg-stone-100 rounded-[1.5rem] overflow-hidden border border-stone-200 flex-shrink-0">
-                        <img src="${imagePath}" class="w-full h-full object-cover">
+                        <img src="${imagePath}"
+                             class="w-full h-full object-cover"
+                             onerror="this.src='https://placehold.co/600x600/f5f5f4/a8a29e?text=No+Image'">
                     </div>
                     <div class="flex-1 min-w-0">
                         <h4 class="font-bold text-gray-800 text-base truncate italic">${firstItem.nama_produk}</h4>
@@ -152,6 +173,7 @@ $(document).ready(function () {
             </div>
         </div>`;
     }
+
 
     // --- LOGIKA UPDATE STATUS (Terima/Batal) ---
     $container.on('click', '.btn-update-status', function () {
