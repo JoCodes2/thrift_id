@@ -44,8 +44,8 @@ Route::get('/produk-admin', function () {
     return view('admin.produk');
 });
 
-Route::get('/transaksi', function () {
-    return view('admin.transaksi');
+Route::get('/transaksi-admin', function () {
+    return view('admin.transaksiadmin');
 });
 
 // route auth
@@ -143,6 +143,7 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/get/{id}', 'getDataById');
             Route::post('/update/{id}', 'updateData');
             Route::delete('/delete/{id}', 'deleteData');
+            Route::get('/admin', 'transaksiAdmin');
         });
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     });

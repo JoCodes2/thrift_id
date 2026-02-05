@@ -33,4 +33,9 @@ class TransaksiControllers extends Controller
     {
         return $this->transaksiRepo->deleteData($id);
     }
+
+    public function transaksiAdmin()
+    {
+        return $this->transaksiRepo->transaksiAdmin();
+    }
 }

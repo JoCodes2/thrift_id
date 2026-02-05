@@ -61,8 +61,8 @@
                 <div>Produk</div>
             </a>
         </li>
-        <li class="menu-item {{ request()->is('transaksi') ? 'active' : '' }}">
-            <a href="/transaksi" class="menu-link">
+        <li class="menu-item {{ request()->is('transaksi-admin') ? 'active' : '' }}">
+            <a href="/transaksi-admin" class="menu-link">
                 <i class="menu-icon fa-solid fa-box-open"></i>
                 <div>Transaksi</div>
             </a>

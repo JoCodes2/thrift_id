@@ -129,6 +129,36 @@ class TransaksiRepositories implements TransaksiInterfaces
         }
     }
 
+    public function transaksiAdmin()
+    {
+        $data = $this->tansaksiModel::with([
+            'pembeli',
+            'items.produk.toko',
+            'items.produk.deskrisp'
+        ])
+            ->latest()
+            ->get()
+            ->map(function ($transaksi) {
+                return $transaksi->items->map(function ($item) use ($transaksi) {
+                    return [
+                        'nama_toko' => $item->produk->toko->nama_toko ?? '-',
+                        'kode_transaksi' => $transaksi->nomor_transaksi,
+                        'foto_produk' => $item->produk->deskrisp->first()->gambar ?? null,
+                        'nama_produk' => $item->nama_produk,
+                        'tanggal_pembelian' => $transaksi->created_at->format('Y-m-d H:i:s'),
+                        'harga' => $item->harga_satuan,
+                        'jumlah' => $item->qty,
+                        'alamat_pembeli' => $transaksi->pembeli->alamat ?? '-',
+                        'email_pembeli' => $transaksi->pembeli->email,
+                        'status_item' => $item->status_item,
+                    ];
+                });
+            })
+            ->flatten(1);
+
+        return $this->success($data, "Berhasil mengambil data transaksi admin");
+    }
+
     public function updateData(Request $request, $id) {}
     public function deleteData($id) {}
 }
