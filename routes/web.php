@@ -44,6 +44,10 @@ Route::get('/produk-admin', function () {
     return view('admin.produk');
 });
 
+Route::get('/transaksi-admin', function () {
+    return view('admin.transaksiadmin');
+});
+
 
 Route::get('/produk-unggulan', [ProdukController::class, 'getProdukUnggulan'])->name('produk.unggulan');
 // route auth
@@ -145,6 +149,8 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/get/{id}', 'getDataById');
             Route::post('/update/{id}', 'updateData');
             Route::delete('/delete/{id}', 'deleteData');
+            Route::get('/admin', 'transaksiAdmin');
+            Route::post('/update-status/{id}', 'updateStatusItem');
         });
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     });

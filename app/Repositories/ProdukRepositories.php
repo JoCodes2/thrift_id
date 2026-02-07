@@ -12,6 +12,7 @@ use App\Models\KategoriModel;
 use App\Models\ProdukModel;
 use App\Models\User;
 use App\Traits\HttpResponseTraits;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class ProdukRepositories implements ProdukInterfaces
@@ -24,14 +25,48 @@ class ProdukRepositories implements ProdukInterfaces
         $this->ProdukModel = $ProdukModel;
     }
 
-    public function getAllData()
-    {
-        $data = ProdukModel::with(['kategori', 'toko', 'deskrisp'])->get();
-        if (!$data) {
-            return $this->dataNotFound();
-        }
-        return $this->success($data);
-    }
+    // public function getAllData()
+    // {
+    //     $data = ProdukModel::with(['kategori', 'toko', 'deskrisp'])->get();
+    //     if (!$data) {
+    //         return $this->dataNotFound();
+    //     }
+    //     return $this->success($data);
+    // }
+
+//     public function getAllData()
+// {
+//     $toko = TokoModel::where('user_id', auth()->id())->first();
+
+//     if (!$toko) {
+//         return $this->dataNotFound('Toko belum dibuat');
+//     }
+
+//     $data = ProdukModel::with(['kategori', 'toko', 'deskripsi'])
+//         ->where('toko_id', $toko->id)
+//         ->get();
+
+//     return $data->isEmpty()
+//         ? $this->dataNotFound()
+//         : $this->success($data);
+// }
+
+public function getAllData()
+{
+    $user = Auth::user();
+
+    $data = ProdukModel::with(['kategori', 'toko', 'deskrisp'])
+        ->whereHas('toko', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->get();
+
+    return $data->isEmpty()
+        ? $this->dataNotFound()
+        : $this->success($data);
+}
+
+
 
     public function getAllForWeb()
     {

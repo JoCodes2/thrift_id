@@ -11,5 +11,7 @@ interface TransaksiInterfaces
     public function getDataById($id);
     public function updateData(Request $request, $id);
     public function deleteData($id);
+    public function transaksiAdmin();
+    public function updateStatusItem($id, $status);
     public function createRating(Request $request);
 }

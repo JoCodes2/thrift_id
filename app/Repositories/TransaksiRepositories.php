@@ -167,6 +167,48 @@ class TransaksiRepositories implements TransaksiInterfaces
         }
     }
 
+    public function transaksiAdmin()
+    {
+        $data = $this->tansaksiModel::with([
+            'pembeli',
+            'items.produk.toko',
+            'items.produk.deskrisp'
+        ])
+            ->latest()
+            ->get()
+            ->map(function ($transaksi) {
+                return $transaksi->items->map(function ($item) use ($transaksi) {
+                    return [
+                        'id' => $item->id,
+                        'nama_pembeli' => $transaksi->pembeli->nama ?? '-',
+                        'kode_transaksi' => $transaksi->nomor_transaksi,
+                        'nama_produk' => $item->nama_produk,
+                        'tanggal_pembelian' => $transaksi->created_at->format('Y-m-d H:i:s'),
+                        'harga' => $item->harga_satuan,
+                        'jumlah' => $item->qty,
+                        'total_harga' => $transaksi->total_harga,
+                        'alamat_pembeli' => $transaksi->pembeli->alamat ?? '-',
+                        'email_pembeli' => $transaksi->pembeli->email,
+                        'status_item' => $item->status_item,
+                    ];
+                });
+            })
+            ->flatten(1);
+
+        return $this->success($data, "Berhasil mengambil data transaksi admin");
+    }
+
+    public function updateStatusItem($id, $status)
+    {
+        try {
+            $item = $this->itemtransaksiModel->findOrFail($id);
+            $item->update(['status_item' => $status]);
+            return $this->success($item, "Status item berhasil diperbarui");
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage(), 400, $th, class_basename($this), __FUNCTION__);
+        }
+    }
+
     public function updateData(Request $request, $id)
     {
         DB::beginTransaction();
