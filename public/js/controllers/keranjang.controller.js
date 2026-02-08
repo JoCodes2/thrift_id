@@ -38,22 +38,34 @@ $(document).ready(function () {
 
         try {
             const response = await service.addKeranjang(productId);
+
+            Swal.close(); // ⬅️ TUTUP LOADING
+
             if (response.code === 200) {
-                successAlert('Produk berhasil ditambahkan!').then(() => {
-                    if (window.location.pathname.includes('keranjang')) {
-                        initKeranjangPage();
-                    }
-                });
+                await successAlert('Produk berhasil ditambahkan!');
+                if (window.location.pathname.includes('keranjang')) {
+                    initKeranjangPage();
+                }
             }
+
         } catch (error) {
+
+            Swal.close(); // ⬅️ TUTUP LOADING JUGA SAAT ERROR
+
             if (error.status === 401) {
                 warningAlert('Silahkan login terlebih dahulu untuk mulai belanja.');
-            } else {
+            }
+            else if (error.status === 403) {
+                warningAlert('Hanya pembeli yang dapat menambahkan produk ke keranjang.');
+            }
+            else {
                 errorAlert('Gagal menambahkan produk ke keranjang.');
             }
         }
+
         await service.updateCartBadge();
     });
+
 
     $(document).on('click', '.btn-hapus', function () {
         const id = $(this).data('id');

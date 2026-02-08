@@ -59,6 +59,21 @@ class KeranjangRepositories implements KeranjangInterfaces
     public function tambahKeranjang(Request $request)
     {
         try {
+
+            if (!Auth::check()) {
+                return response()->json([
+                    'code' => 401,
+                    'message' => 'Silahkan login terlebih dahulu'
+                ], 401);
+            }
+
+            if (Auth::user()->role !== 'pembeli') {
+                return response()->json([
+                    'code' => 403,
+                    'message' => 'Hanya pembeli yang bisa menambahkan ke keranjang'
+                ], 403);
+            }
+
             $userId = Auth::id();
             $idProduk = $request->id_produk;
             $qtyInput = $request->qty ?? 1;
@@ -68,7 +83,6 @@ class KeranjangRepositories implements KeranjangInterfaces
                 ->first();
 
             if ($cekKeranjang) {
-
                 if ($request->has('update_mode')) {
                     $cekKeranjang->update(['qty' => $qtyInput]);
                 } else {
@@ -106,6 +120,7 @@ class KeranjangRepositories implements KeranjangInterfaces
             return $this->error($th->getMessage(), 400, $th, class_basename($this), __FUNCTION__);
         }
     }
+
     public function hapusKeranjang($id)
     {
         try {

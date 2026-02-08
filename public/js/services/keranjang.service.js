@@ -260,6 +260,7 @@ class keranjangService {
                 id_produk: idProduk,
                 qty: 1
             });
+
             return response;
         } catch (error) {
             console.error("Gagal menambah ke keranjang:", error);

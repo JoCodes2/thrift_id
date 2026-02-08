@@ -27,26 +27,8 @@ Route::get('/detail-toko', function () {
 });
 Route::get('/detail-toko/{id}', [PageController::class, 'detailToko']);
 
-//admin web
-Route::get('/toko', function () {
-    return view('admin.toko');
-});
 
-Route::get('/user', function () {
-    return view('admin.user');
-});
 
-Route::get('/kategori', function () {
-    return view('admin.kategori');
-});
-
-Route::get('/produk-admin', function () {
-    return view('admin.produk');
-});
-
-Route::get('/transaksi-admin', function () {
-    return view('admin.transaksiadmin');
-});
 
 
 Route::get('/produk-unggulan', [ProdukController::class, 'getProdukUnggulan'])->name('produk.unggulan');
@@ -63,37 +45,51 @@ Route::prefix('thrif-id/user')->controller(UserController::class)->group(functio
     Route::post('/create', 'createData');
 });
 Route::middleware(['auth', 'web'])->group(function () {
-    // route admin
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    });
-
     Route::get('/setting-user', function () {
         return view('admin.setting-user');
-    });
+    })->middleware('role:penjual,super-admin');
+    Route::get('/user', function () {
+        return view('admin.user');
+    })->middleware('role:super-admin');
+
+    Route::get('/kategori', function () {
+        return view('admin.kategori');
+    })->middleware('role:super-admin');
+
+    Route::get('/produk-admin', function () {
+        return view('admin.produk');
+    })->middleware('role:penjual');
+
+    Route::get('/transaksi-admin', function () {
+        return view('admin.transaksiadmin');
+    })->middleware('role:penjual');
+    //admin web
+    Route::get('/dashboard', function () {
+        return view('admin.toko');
+    })->middleware('role:penjual');
 
     // route pembeli
     Route::get('/profile', function () {
         return view('pages.profile-pembeli');
-    });
+    })->middleware('role:pembeli');
     Route::get('/riwayat-pesanan/menunggu', function () {
         return view('pages.riwayat-pesanan-menunggu');
-    });
+    })->middleware('role:pembeli');
     Route::get('/riwayat-pesanan/dikirim', function () {
         return view('pages.riwayat-pesanan-dikirim');
-    });
+    })->middleware('role:pembeli');
     Route::get('/riwayat-pesanan/selesai', function () {
         return view('pages.riwayat-pesanan-selesai');
-    });
+    })->middleware('role:pembeli');
     Route::get('/riwayat-pesanan/dibatalkan', function () {
         return view('pages.riwayat-pesanan-dibatalkan');
-    });
+    })->middleware('role:pembeli');
     Route::get('/keranjang', function () {
         return view('pages.keranjang');
-    });
+    })->middleware('role:pembeli');
     Route::get('/pembayaran', function () {
         return view('pages.pembayaran');
-    });
+    })->middleware('role:pembeli');
 
     // route api
     Route::prefix('thrif-id')->group(function () {
