@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThriftVibe - Sustainable Fashion</title>
+     <link rel="icon" type="image/png" href="{{ asset('assets/img/thrift.png') }}" />
       <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
