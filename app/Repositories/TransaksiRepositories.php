@@ -172,25 +172,29 @@ class TransaksiRepositories implements TransaksiInterfaces
     {
         $user = Auth::user();
 
-        // 2. Pastikan relasi toko di model User sudah benar
-        if (!$user->toko) {
-            return $this->error([], "User tidak memiliki toko");
-        }
+        // 1. Ambil semua ID toko yang dimiliki user ini
+        // pluck('id') mengambil hanya kolom 'id' dari hasil collection toko
+        $tokoIdsPenjual = $user->toko->pluck('id')->toArray();
 
-        $tokoIdPenjual = $user->toko->id;
+        // Jika user tidak punya toko sama sekali
+        if (empty($tokoIdsPenjual)) {
+            return $this->success([], "User tidak memiliki toko");
+        }
 
         $data = $this->tansaksiModel::with([
             'pembeli',
-            'items' => function ($query) use ($tokoIdPenjual) {
-                $query->whereHas('produk', function ($q) use ($tokoIdPenjual) {
-                    $q->where('toko_id', $tokoIdPenjual);
+            'items' => function ($query) use ($tokoIdsPenjual) {
+                $query->whereHas('produk', function ($q) use ($tokoIdsPenjual) {
+                    // 2. Gunakan whereIn untuk mengecek apakah id_toko ada di dalam daftar ID toko penjual
+                    $q->whereIn('id_toko', $tokoIdsPenjual);
                 });
             },
             'items.produk.toko',
-            'items.produk.deskrisp'
+            'items.produk.deskrisp' // Pastikan nama fungsi di model ProdukModel sesuai
         ])
-            ->whereHas('items.produk', function ($query) use ($tokoIdPenjual) {
-                $query->where('toko_id', $tokoIdPenjual);
+            ->whereHas('items.produk', function ($query) use ($tokoIdsPenjual) {
+                // 3. Filter transaksi utama dengan whereIn juga
+                $query->whereIn('id_toko', $tokoIdsPenjual);
             })
             ->latest()
             ->get()
