@@ -167,35 +167,52 @@ class TransaksiRepositories implements TransaksiInterfaces
         }
     }
 
+
     public function transaksiAdmin()
     {
+        $user = Auth::user()->id;
+
+        $tokoIdPenjual = $user->toko->id;
+
         $data = $this->tansaksiModel::with([
             'pembeli',
+            // 3. Filter Items: Hanya ambil item yang produknya milik toko penjual
+            'items' => function ($query) use ($tokoIdPenjual) {
+                $query->whereHas('produk', function ($q) use ($tokoIdPenjual) {
+                    $q->where('toko_id', $tokoIdPenjual);
+                });
+            },
             'items.produk.toko',
             'items.produk.deskrisp'
         ])
+            // 4. Filter Transaksi: Hanya ambil transaksi yang memiliki setidaknya satu item
+            // milik toko penjual yang login
+            ->whereHas('items.produk', function ($query) use ($tokoIdPenjual) {
+                $query->where('toko_id', $tokoIdPenjual);
+            })
             ->latest()
             ->get()
-            ->map(function ($transaksi) {
+            ->flatMap(function ($transaksi) {
                 return $transaksi->items->map(function ($item) use ($transaksi) {
                     return [
                         'id' => $item->id,
                         'nama_pembeli' => $transaksi->pembeli->nama ?? '-',
                         'kode_transaksi' => $transaksi->nomor_transaksi,
-                        'nama_produk' => $item->nama_produk,
+                        // Mengambil nama produk dari tabel produk melalui relasi
+                        'nama_produk' => $item->produk->nama_produk ?? $item->nama_produk,
                         'tanggal_pembelian' => $transaksi->created_at->format('Y-m-d H:i:s'),
-                        'harga' => $item->harga_satuan,
-                        'jumlah' => $item->qty,
-                        'total_harga' => $transaksi->total_harga,
+                        'harga' => (int) $item->harga_satuan,
+                        'jumlah' => (int) $item->qty,
+                        'total_harga' => (int) $transaksi->total_harga,
                         'alamat_pembeli' => $transaksi->pembeli->alamat ?? '-',
-                        'email_pembeli' => $transaksi->pembeli->email,
+                        'email_pembeli' => $transaksi->pembeli->email ?? '-',
                         'status_item' => $item->status_item,
+                        'nama_toko' => $item->produk->toko->nama_toko ?? '-'
                     ];
                 });
-            })
-            ->flatten(1);
+            });
 
-        return $this->success($data, "Berhasil mengambil data transaksi admin");
+        return $this->success($data, "Berhasil mengambil data transaksi produk milik penjual");
     }
 
     public function updateStatusItem($id, $status)
