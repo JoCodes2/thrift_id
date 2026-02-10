@@ -36,10 +36,6 @@
                                 <div class="text-xl font-black text-gray-900">{{ $produk->count() }}</div>
                             </div>
                             <div class="bg-stone-50 p-4 rounded-2xl border border-stone-100">
-                                <div class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">Rating</div>
-                                <div class="text-xl font-black text-gray-900">4.9/5.0</div>
-                            </div>
-                            <div class="bg-stone-50 p-4 rounded-2xl border border-stone-100">
                                 <div class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">Bergabung</div>
                                 <div class="text-xl font-black text-gray-900">{{ $toko->tahun_terdaftar }}</div>
                             </div>
