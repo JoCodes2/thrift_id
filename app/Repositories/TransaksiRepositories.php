@@ -170,13 +170,17 @@ class TransaksiRepositories implements TransaksiInterfaces
 
     public function transaksiAdmin()
     {
-        $user = Auth::user()->id;
+        $user = Auth::user();
+
+        // 2. Pastikan relasi toko di model User sudah benar
+        if (!$user->toko) {
+            return $this->error([], "User tidak memiliki toko");
+        }
 
         $tokoIdPenjual = $user->toko->id;
 
         $data = $this->tansaksiModel::with([
             'pembeli',
-            // 3. Filter Items: Hanya ambil item yang produknya milik toko penjual
             'items' => function ($query) use ($tokoIdPenjual) {
                 $query->whereHas('produk', function ($q) use ($tokoIdPenjual) {
                     $q->where('toko_id', $tokoIdPenjual);
@@ -185,8 +189,6 @@ class TransaksiRepositories implements TransaksiInterfaces
             'items.produk.toko',
             'items.produk.deskrisp'
         ])
-            // 4. Filter Transaksi: Hanya ambil transaksi yang memiliki setidaknya satu item
-            // milik toko penjual yang login
             ->whereHas('items.produk', function ($query) use ($tokoIdPenjual) {
                 $query->where('toko_id', $tokoIdPenjual);
             })
@@ -198,7 +200,6 @@ class TransaksiRepositories implements TransaksiInterfaces
                         'id' => $item->id,
                         'nama_pembeli' => $transaksi->pembeli->nama ?? '-',
                         'kode_transaksi' => $transaksi->nomor_transaksi,
-                        // Mengambil nama produk dari tabel produk melalui relasi
                         'nama_produk' => $item->produk->nama_produk ?? $item->nama_produk,
                         'tanggal_pembelian' => $transaksi->created_at->format('Y-m-d H:i:s'),
                         'harga' => (int) $item->harga_satuan,
