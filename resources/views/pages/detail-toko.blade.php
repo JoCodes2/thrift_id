@@ -109,6 +109,11 @@
                         </div>
 
                         <div class="p-6 flex-1">
+                            <div class="flex justify-between items-start mb-2">
+                                <span
+                                    class="text-[10px] font-bold text-green-700 uppercase tracking-widest">{{ $item->kategori->nama_kategori ?? 'Kategori' }}</span>
+
+                            </div>
 
                             <h3 class="font-bold text-gray-900 text-lg mb-1 truncate">{{ $item->nama_produk }}</h3>
                             <p class="text-[10px] text-gray-400 mb-4 uppercase font-bold italic">
