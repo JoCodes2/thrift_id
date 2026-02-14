@@ -71,17 +71,19 @@ class TransaksiRepositories implements TransaksiInterfaces
                 'ulasan'       => $request->ulasan,
             ]);
 
-            $this->logAktivitasModel->updateOrCreate(
+            $log = $this->logAktivitasModel->firstOrCreate(
                 [
                     'id_pembeli'      => $userId,
                     'id_produk'       => $request->produk_id,
                     'jenis_aktivitas' => 'beri_rating',
                 ],
                 [
-                    'skor_minat'      => 7,
-                    'frekuensi'       => DB::raw('COALESCE(frekuensi, 0) + 1'),
+                    'skor_minat' => 7,
+                    'frekuensi'  => 0,
                 ]
             );
+
+            $log->increment('frekuensi');
 
             DB::commit();
             return $this->success($penilaian, "Terima kasih! Ulasan Anda telah berhasil disimpan.");
@@ -124,30 +126,25 @@ class TransaksiRepositories implements TransaksiInterfaces
             foreach ($request->items as $item) {
                 $produk = $this->produkModel::with('kategori')->findOrFail($item['id_produk']);
 
-                $this->itemtransaksiModel->create([
-                    'id' => Str::uuid(),
-                    'id_transaksi' => $transaksi->id,
-                    'id_produk'    => $produk->id,
-                    'status_item'  => 'menunggu',
-                    'nama_produk'  => $produk->nama_produk,
-                    'nama_kategori' => $produk->kategori->nama_kategori ?? '-',
-                    'harga_satuan' => $produk->harga,
-                    'qty'          => $item['qty'],
-                    'subtotal'     => $produk->harga * $item['qty'],
-                ]);
+                $log = $this->logAktivitasModel->where([
+                    'id_pembeli'      => $userId,
+                    'id_produk'       => $produk->id,
+                    'jenis_aktivitas' => 'transaksi',
+                ])->first();
 
-                $this->logAktivitasModel->updateOrCreate(
-                    [
+                if ($log) {
+                    $log->increment('frekuensi');
+                    $log->update(['skor_minat' => 5]);
+                } else {
+                    $this->logAktivitasModel->create([
+                        'id'              => Str::uuid(),
                         'id_pembeli'      => $userId,
                         'id_produk'       => $produk->id,
                         'jenis_aktivitas' => 'transaksi',
-                    ],
-                    [
-                        'id'              => Str::uuid(),
                         'skor_minat'      => 5,
-                        'frekuensi'       => DB::raw('COALESCE(frekuensi, 0) + 1'),
-                    ]
-                );
+                        'frekuensi'       => 1,
+                    ]);
+                }
 
                 $produk->increment('jumlah_terjual', $item['qty']);
             }

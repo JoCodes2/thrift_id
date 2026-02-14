@@ -12,7 +12,6 @@ use App\Repositories\ProdukRepositories;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ProdukController extends Controller
@@ -65,45 +64,38 @@ class ProdukController extends Controller
             $sessionKey = 'last_view_time_' . $idProduk;
             $currentTime = now();
 
-            // 1. Cek session untuk mencegah duplikasi cepat
+            // 1. Cek sesi untuk batasan waktu 60 detik
             if (session()->has($sessionKey)) {
                 $lastViewTime = session()->get($sessionKey);
-                // Jika akses kurang dari 60 detik, abaikan
                 if ($currentTime->diffInSeconds($lastViewTime) < 60) {
-                    return;
+                    return; // Keluar jika belum 60 detik
                 }
             }
 
-            // 2. Gunakan Lock agar transaksi lain tidak mengubah data ini secara bersamaan
-            DB::transaction(function () use ($userId, $idProduk, $currentTime, $sessionKey) {
+            // 2. Cari data log, jika tidak ada, buat baru
+            $log = LogAktivitasModel::firstOrCreate(
+                [
+                    'id_pembeli'      => $userId,
+                    'id_produk'       => $idProduk,
+                    'jenis_aktivitas' => 'lihat',
+                ],
+                [
+                    'skor_minat' => 1,
+                    'frekuensi'  => 0, // Inisialisasi 0 agar nanti jadi 1
+                    // Jika pakai UUID, tambahkan 'id' => Str::uuid(), di sini
+                ]
+            );
 
-                // Mencoba mencari log yang ada
-                $log = LogAktivitasModel::where('id_pembeli', $userId)
-                    ->where('id_produk', $idProduk)
-                    ->where('jenis_aktivitas', 'lihat')
-                    ->lockForUpdate() // Mengunci baris agar tidak ada proses lain yang update
-                    ->first();
+            // 3. Tambahkan frekuensi (+1) dan update skor
+            $log->frekuensi = $log->frekuensi + 1;
+            $log->skor_minat = 1; // Update nilai skor
+            $log->save();
 
-                if ($log) {
-                    // Jika sudah ada, update frekuensi dan skor
-                    $log->increment('frekuensi');
-                    $log->update(['skor_minat' => 1]); // Atau logika skor Anda
-                } else {
-                    // Jika belum ada, buat baru dengan frekuensi 1
-                    LogAktivitasModel::create([
-                        'id_pembeli'      => $userId,
-                        'id_produk'       => $idProduk,
-                        'jenis_aktivitas' => 'lihat',
-                        'skor_minat'      => 1,
-                        'frekuensi'       => 1, // Pastikan dimulai dari 1
-                    ]);
-                }
-            });
-
-            // 3. Simpan session SETELAH transaksi berhasil
+            // 4. Update sesi setelah data berhasil diproses
             session()->put($sessionKey, $currentTime);
             session()->save();
         } catch (\Exception $e) {
+            // Log error untuk pengecekan
             Log::error("Gagal simpan log aktivitas Produk ID {$idProduk}: " . $e->getMessage());
         }
     }
