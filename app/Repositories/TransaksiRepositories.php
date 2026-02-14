@@ -71,19 +71,24 @@ class TransaksiRepositories implements TransaksiInterfaces
                 'ulasan'       => $request->ulasan,
             ]);
 
-            $log = $this->logAktivitasModel->firstOrCreate(
-                [
+            $log = $this->logAktivitasModel->where([
+                'id_pembeli'      => $userId,
+                'id_produk'       => $request->produk_id,
+                'jenis_aktivitas' => 'beri_rating',
+            ])->first();
+
+            if ($log) {
+                $log->increment('frekuensi');
+            } else {
+                $this->logAktivitasModel->create([
+                    'id'              => Str::uuid(),
                     'id_pembeli'      => $userId,
                     'id_produk'       => $request->produk_id,
                     'jenis_aktivitas' => 'beri_rating',
-                ],
-                [
-                    'skor_minat' => 7,
-                    'frekuensi'  => 0,
-                ]
-            );
-
-            $log->increment('frekuensi');
+                    'skor_minat'      => 7,
+                    'frekuensi'       => 1,
+                ]);
+            }
 
             DB::commit();
             return $this->success($penilaian, "Terima kasih! Ulasan Anda telah berhasil disimpan.");
