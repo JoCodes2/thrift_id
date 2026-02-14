@@ -79,7 +79,7 @@ class TransaksiRepositories implements TransaksiInterfaces
                 ],
                 [
                     'skor_minat'      => 7,
-                    'frekuensi'       => DB::raw('frekuensi + 1'),
+                    'frekuensi'       => DB::raw('COALESCE(frekuensi, 0) + 1'),
                 ]
             );
 
@@ -145,7 +145,7 @@ class TransaksiRepositories implements TransaksiInterfaces
                     [
                         'id'              => Str::uuid(),
                         'skor_minat'      => 5,
-                        'frekuensi'       => DB::raw('frekuensi + 1'),
+                        'frekuensi'       => DB::raw('COALESCE(frekuensi, 0) + 1'),
                     ]
                 );
 

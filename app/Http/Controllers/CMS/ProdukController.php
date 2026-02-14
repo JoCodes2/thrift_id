@@ -12,6 +12,7 @@ use App\Repositories\ProdukRepositories;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ProdukController extends Controller
@@ -79,10 +80,9 @@ class ProdukController extends Controller
                 ],
                 [
                     'skor_minat' => 1,
+                    'frekuensi'  => DB::raw('COALESCE(frekuensi, 0) + 1'),
                 ]
             );
-
-            $log->increment('frekuensi');
 
             session()->put($sessionKey, $currentTime);
             session()->save();
