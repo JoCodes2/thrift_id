@@ -65,25 +65,42 @@ class ProdukController extends Controller
             $sessionKey = 'last_view_time_' . $idProduk;
             $currentTime = now();
 
+            // 1. Cek session untuk mencegah duplikasi cepat
             if (session()->has($sessionKey)) {
                 $lastViewTime = session()->get($sessionKey);
+                // Jika akses kurang dari 60 detik, abaikan
                 if ($currentTime->diffInSeconds($lastViewTime) < 60) {
                     return;
                 }
             }
 
-            $log = LogAktivitasModel::updateOrCreate(
-                [
-                    'id_pembeli'      => $userId,
-                    'id_produk'       => $idProduk,
-                    'jenis_aktivitas' => 'lihat',
-                ],
-                [
-                    'skor_minat' => 1,
-                    'frekuensi'  => DB::raw('COALESCE(frekuensi, 0) + 1'),
-                ]
-            );
+            // 2. Gunakan Lock agar transaksi lain tidak mengubah data ini secara bersamaan
+            DB::transaction(function () use ($userId, $idProduk, $currentTime, $sessionKey) {
 
+                // Mencoba mencari log yang ada
+                $log = LogAktivitasModel::where('id_pembeli', $userId)
+                    ->where('id_produk', $idProduk)
+                    ->where('jenis_aktivitas', 'lihat')
+                    ->lockForUpdate() // Mengunci baris agar tidak ada proses lain yang update
+                    ->first();
+
+                if ($log) {
+                    // Jika sudah ada, update frekuensi dan skor
+                    $log->increment('frekuensi');
+                    $log->update(['skor_minat' => 1]); // Atau logika skor Anda
+                } else {
+                    // Jika belum ada, buat baru dengan frekuensi 1
+                    LogAktivitasModel::create([
+                        'id_pembeli'      => $userId,
+                        'id_produk'       => $idProduk,
+                        'jenis_aktivitas' => 'lihat',
+                        'skor_minat'      => 1,
+                        'frekuensi'       => 1, // Pastikan dimulai dari 1
+                    ]);
+                }
+            });
+
+            // 3. Simpan session SETELAH transaksi berhasil
             session()->put($sessionKey, $currentTime);
             session()->save();
         } catch (\Exception $e) {

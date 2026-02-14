@@ -133,6 +133,8 @@
                     method: 'GET',
                     type : 'json',
                     success: function(response) {
+                    console.log(response);
+
                         $('#container-produk').css('opacity', '1');
                         renderCards(response.data, '#container-produk');
                     },
