@@ -71,11 +71,15 @@ class TransaksiRepositories implements TransaksiInterfaces
                 'ulasan'       => $request->ulasan,
             ]);
 
-            $log = $this->logAktivitasModel->where([
-                'id_pembeli'      => $userId,
-                'id_produk'       => $request->produk_id,
-                'jenis_aktivitas' => 'beri_rating',
-            ])->first();
+
+            $log = $this->logAktivitasModel
+                ->where([
+                    'id_pembeli'      => $userId,
+                    'id_produk'       => $request->produk_id,
+                    'jenis_aktivitas' => 'beri_rating',
+                ])
+                ->lockForUpdate()
+                ->first();
 
             if ($log) {
                 $log->increment('frekuensi');
@@ -89,6 +93,7 @@ class TransaksiRepositories implements TransaksiInterfaces
                     'frekuensi'       => 1,
                 ]);
             }
+
 
             DB::commit();
             return $this->success($penilaian, "Terima kasih! Ulasan Anda telah berhasil disimpan.");
@@ -131,15 +136,17 @@ class TransaksiRepositories implements TransaksiInterfaces
             foreach ($request->items as $item) {
                 $produk = $this->produkModel::with('kategori')->findOrFail($item['id_produk']);
 
-                $log = $this->logAktivitasModel->where([
-                    'id_pembeli'      => $userId,
-                    'id_produk'       => $produk->id,
-                    'jenis_aktivitas' => 'transaksi',
-                ])->first();
+                $log = $this->logAktivitasModel
+                    ->where([
+                        'id_pembeli'      => $userId,
+                        'id_produk'       => $produk->id,
+                        'jenis_aktivitas' => 'transaksi',
+                    ])
+                    ->lockForUpdate()
+                    ->first();
 
                 if ($log) {
                     $log->increment('frekuensi');
-                    $log->update(['skor_minat' => 5]);
                 } else {
                     $this->logAktivitasModel->create([
                         'id'              => Str::uuid(),
@@ -174,11 +181,8 @@ class TransaksiRepositories implements TransaksiInterfaces
     {
         $user = Auth::user();
 
-        // 1. Ambil semua ID toko yang dimiliki user ini
-        // pluck('id') mengambil hanya kolom 'id' dari hasil collection toko
         $tokoIdsPenjual = $user->toko->pluck('id')->toArray();
 
-        // Jika user tidak punya toko sama sekali
         if (empty($tokoIdsPenjual)) {
             return $this->success([], "User tidak memiliki toko");
         }
@@ -187,7 +191,6 @@ class TransaksiRepositories implements TransaksiInterfaces
             'pembeli',
             'items' => function ($query) use ($tokoIdsPenjual) {
                 $query->whereHas('produk', function ($q) use ($tokoIdsPenjual) {
-                    // 2. Gunakan whereIn untuk mengecek apakah id_toko ada di dalam daftar ID toko penjual
                     $q->whereIn('id_toko', $tokoIdsPenjual);
                 });
             },

@@ -144,7 +144,6 @@
                     }
                 });
             }
-
             function renderCards(data, containerId) {
                 let html = '';
                 if(data.length === 0) {
@@ -156,6 +155,8 @@
                     const rating = item.rating ? parseFloat(item.rating).toFixed(1) : '0.0';
                     const harga = new Intl.NumberFormat('id-ID').format(item.harga);
                     let gambar;
+
+                    // Cek gambar
                     if (item.deskrisp &&
                         item.deskrisp.length > 0 &&
                         item.deskrisp[0].gambar &&
@@ -166,6 +167,11 @@
                     } else {
                         gambar = `https://placehold.co/600x600/f5f5f4/a8a29e?text=No+Image`;
                     }
+
+                    // PERBAIKAN: Mengambil data dari objek relasi
+                    const namaKategori = item.kategori ? item.kategori.nama_kategori : 'Fashion';
+                    const namaToko = item.toko ? item.toko.nama_toko : 'Thrift Store';
+
                     html += `
                     <div class="bg-white rounded-[1.5rem] overflow-hidden border border-stone-100 shadow-sm hover:shadow-xl transition-all duration-500 group animate-fadeIn">
                         <div class="relative h-60 overflow-hidden">
@@ -177,7 +183,7 @@
 
                         <div class="p-5">
                             <div class="flex justify-between items-start mb-2">
-                                <span class="text-[9px] font-black text-green-700 uppercase tracking-widest italic">${item.id_kategori?.nama_kategori || 'Fashion'}</span>
+                                <span class="text-[9px] font-black text-green-700 uppercase tracking-widest italic">${namaKategori}</span>
                                 <div class="flex items-center text-orange-400 text-[10px] font-bold">
                                     <i class="fa-solid fa-star mr-1"></i>
                                     <span class="text-gray-900">${rating}</span>
@@ -186,7 +192,8 @@
 
                             <h3 class="font-bold text-gray-900 text-sm mb-1 truncate uppercase tracking-tight">${item.nama_produk}</h3>
                             <p class="text-[9px] text-gray-400 mb-4 uppercase font-bold italic flex items-center tracking-tight">
-                                <i class="fa-solid fa-shop mr-1.5 text-green-600"></i> ${item.id_toko?.nama_toko || 'Thrift Store'}
+                                <i class="fa-solid fa-shop mr-1.5 text-green-600"></i>
+                                ${namaToko}
                             </p>
 
                             <div class="flex items-center justify-between mb-5">
