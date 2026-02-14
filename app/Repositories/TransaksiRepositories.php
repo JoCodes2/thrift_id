@@ -136,6 +136,21 @@ class TransaksiRepositories implements TransaksiInterfaces
             foreach ($request->items as $item) {
                 $produk = $this->produkModel::with('kategori')->findOrFail($item['id_produk']);
 
+                // --- PERBAIKAN: MASUKKAN KEMBALI DATA KE TABEL ITEM TRANSAKSI ---
+                $this->itemtransaksiModel->create([
+                    'id' => Str::uuid(),
+                    'id_transaksi' => $transaksi->id,
+                    'id_produk'    => $produk->id,
+                    'status_item'  => 'menunggu',
+                    'nama_produk'  => $produk->nama_produk,
+                    'nama_kategori' => $produk->kategori->nama_kategori ?? '-',
+                    'harga_satuan' => $produk->harga,
+                    'qty'          => $item['qty'],
+                    'subtotal'     => $produk->harga * $item['qty'],
+                ]);
+                // -------------------------------------------------------------
+
+                // Logika Log Aktivitas (sudah benar, dipertahankan)
                 $log = $this->logAktivitasModel
                     ->where([
                         'id_pembeli'      => $userId,
@@ -154,7 +169,7 @@ class TransaksiRepositories implements TransaksiInterfaces
                         'id_produk'       => $produk->id,
                         'jenis_aktivitas' => 'transaksi',
                         'skor_minat'      => 5,
-                        'frekuensi'       => 1,
+                        'frekuensi'       => 1, // <--- LANGSUNG 1
                     ]);
                 }
 
@@ -175,7 +190,6 @@ class TransaksiRepositories implements TransaksiInterfaces
             return $this->error($th->getMessage(), 400, $th, class_basename($this), __FUNCTION__);
         }
     }
-
 
     public function transaksiAdmin()
     {
